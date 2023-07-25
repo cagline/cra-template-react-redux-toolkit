@@ -1,7 +1,6 @@
 {
   "name": "cra-template-react-redux-toolkit",
   "version": "0.1.0",
-  "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
     "@testing-library/jest-dom": "^5.16.5",
@@ -42,5 +41,18 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
+  "main": "index.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cagline/cra-template-react-redux-toolkit.git"
+  },
+  "author": "Chanuka Asanka Gunadasa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cagline/cra-template-react-redux-toolkit/issues"
+  },
+  "homepage": "https://github.com/cagline/cra-template-react-redux-toolkit#readme"
 }
