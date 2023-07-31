@@ -21,8 +21,7 @@
       "build": "react-scripts build",
       "test": "react-scripts test",
       "eject": "react-scripts eject",
-      "serve": "serve -s build",
-      "build-and-serve": "npm run build && npm run serve"
+      "api": "json-server --port 3001 --watch data/data.json"
     },
     "eslintConfig": {
       "extends": ["react-app", "plugin:jsx-a11y/recommended"],
