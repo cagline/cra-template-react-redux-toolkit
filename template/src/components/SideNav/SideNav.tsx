@@ -1,4 +1,5 @@
 import {
+  ButtonBase,
   CSSObject,
   Divider,
   IconButton,
@@ -67,9 +68,32 @@ const DrawerHeader = styled('div')(({theme}) => ({
   ...theme.mixins.toolbar,
 }));
 
+const ImageButton = styled(ButtonBase)(({theme}) => ({
+  position: 'relative',
+  width: '100%',
+  height: 64,
+  [theme.breakpoints.down('sm')]: {
+    width: '100% !important', // Overrides inline-style
+    height: 100,
+  },
+  '&:hover, &.Mui-focusVisible': {
+    zIndex: 1,
+    '& .MuiImageBackdrop-root': {
+      opacity: 0.15,
+    },
+    '& .MuiImageMarked-root': {
+      opacity: 0,
+    },
+    '& .MuiTypography-root': {
+      border: '4px solid currentColor',
+    },
+  },
+}));
+
+
 const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
   const theme = useTheme();
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
 
   const handleDrawerOpen = () => {
@@ -83,9 +107,9 @@ const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
   return (
     <Drawer variant="permanent" open={open}>
       <DrawerHeader>
-        <h2 onClick={() => {
-          navigate(`/`);
-        }} style={{width: '100%',textAlign: 'center'}}>CAG</h2>
+        <ImageButton onClick={() => {
+          navigate(`/`)
+        }}>CAG</ImageButton>
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === 'rtl' ? <ChevronRight/> : <ChevronLeft/>}
         </IconButton>
@@ -96,7 +120,7 @@ const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
           <ListItemButton
             sx={{minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5,}}
             onClick={() => {
-              navigate( `/`);
+              navigate(`/`);
             }}
           >
             <ListItemIcon sx={{minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center',}}>
@@ -110,7 +134,7 @@ const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
           <ListItemButton
             sx={{minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5,}}
             onClick={() => {
-              navigate( `/todo`);
+              navigate(`/todo`);
             }}
           >
             <ListItemIcon sx={{minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center',}}>
