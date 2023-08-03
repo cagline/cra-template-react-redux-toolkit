@@ -7,22 +7,22 @@
     },
     {
       "id": 1,
-      "isDone": false,
+      "isDone": true,
       "title": "Call Plumber"
     },
     {
       "id": 2,
-      "isDone": true,
+      "isDone": false,
       "title": "Cleaning"
     },
     {
       "id": 3,
-      "isDone": false,
+      "isDone": true,
       "title": "Mom's Medicine"
     },
     {
       "id": 4,
-      "isDone": false,
+      "isDone": true,
       "title": "Jogging"
     },
     {
