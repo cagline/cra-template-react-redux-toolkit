@@ -21,7 +21,7 @@ export default function Todo() {
     }, []);
 
     return (
-        <div style={{ width: '66%', margin: '0 auto'}}>
+        <div style={{ width: '50%', margin: '0 auto'}}>
             <h4 style={{}}>ToDo API Slice</h4>
             <div style={{width: '400px', margin:'20px auto', display: "flex", flexDirection: 'row', flexGrow: 1 }}>
                 <input

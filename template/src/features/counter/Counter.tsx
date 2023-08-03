@@ -19,7 +19,7 @@ export default function Counter() {
   const incrementValue = Number(incrementAmount) || 0;
 
   return (
-    <div>
+    <div style={{ width: '50%', margin: '0 auto'}}>
       <h4 style={{}}>Counter Slice</h4>
       <div className={styles.row}>
         <button
