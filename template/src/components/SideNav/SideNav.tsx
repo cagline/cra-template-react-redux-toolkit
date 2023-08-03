@@ -1,5 +1,5 @@
 import {
-  ButtonBase,
+  Button, ButtonBase,
   CSSObject,
   Divider,
   IconButton,
@@ -68,7 +68,7 @@ const DrawerHeader = styled('div')(({theme}) => ({
   ...theme.mixins.toolbar,
 }));
 
-const ImageButton = styled(ButtonBase)(({theme}) => ({
+const ImageButton = styled(ButtonBase)(({ theme }) => ({
   position: 'relative',
   width: '100%',
   height: 64,
@@ -107,9 +107,7 @@ const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
   return (
     <Drawer variant="permanent" open={open}>
       <DrawerHeader>
-        <ImageButton onClick={() => {
-          navigate(`/`)
-        }}>CAG</ImageButton>
+        <ImageButton onClick={() => { navigate(`/`) }}>CAG</ImageButton>
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === 'rtl' ? <ChevronRight/> : <ChevronLeft/>}
         </IconButton>
