@@ -1,6 +1,6 @@
 {
   "name": "cra-template-react-redux-toolkit",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "eslintConfig": {
     "extends": [
       "react-app",
