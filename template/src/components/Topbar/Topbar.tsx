@@ -55,9 +55,7 @@ const Topbar = ({open, onDrawerOpen}: any) => {
           >
             <MenuIcon/>
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
-          </Typography>
+          <Typography variant="h6" noWrap component="div">React + Redux-Toolkit + MUI + Typescript Boilerplate</Typography>
           <FormControlLabel
             style={{ marginLeft: 'auto'}}
             control={<Switch checked={themeMode=='dark'} onChange={() => dispatch(changeThemeMode(themeMode))}/>}
