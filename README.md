@@ -1,7 +1,10 @@
 # Create React App with Redux-Toolkit including MUI
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and Redux-Toolkit including MUI.
-
+## Use template
+```
+npx create-react-app my-app --template react-redux-toolkit
+```
 ## TODOs
 1) Dummy Logo image
 2) MUI dark / light theme
