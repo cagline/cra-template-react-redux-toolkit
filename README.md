@@ -22,5 +22,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 ## TODOs
 1) Localization  
-2) If need , apply MUI component to Counter & Todo features
-3) If need , Keycloak & Authorization (implementation as comments to uncomment)
+2) Keycloak & Authorization (implementation as comments to uncomment), (I creaded another libray to simplyfy this setup, not up to date)
+3) Other ideas realted to Authentication / Authorization ?
+4) Redux Persist
