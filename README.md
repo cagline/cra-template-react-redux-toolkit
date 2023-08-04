@@ -21,8 +21,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 
 ## TODOs
-1) Dummy Logo image
-2) MUI dark / light theme
-3) Localization  
-4) If need , apply MUI component to Counter & Todo features
-5) If need , Keycloak & Authorization (implementation as comments to uncomment)
+1) Localization  
+2) If need , apply MUI component to Counter & Todo features
+3) If need , Keycloak & Authorization (implementation as comments to uncomment)
