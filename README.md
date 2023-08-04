@@ -5,6 +5,21 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ```
 npx create-react-app my-app --template react-redux-toolkit
 ```
+In the project directory, you can run:
+
+### `npm run api`
+
+Runs the JSON server.\
+You can point [http://localhost:3001](http://localhost:3001) to check the mock APIs.
+
+You can check the TODO app just after up & run this JSON server.
+
+### `npm start`
+
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+
+
 ## TODOs
 1) Dummy Logo image
 2) MUI dark / light theme
