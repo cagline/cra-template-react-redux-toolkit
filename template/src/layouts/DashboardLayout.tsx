@@ -2,11 +2,11 @@ import { Outlet } from "react-router-dom";
 import SideNav from "../components/SideNav/SideNav";
 import TopBar from "../components/Topbar/Topbar";
 import { useState } from "react";
-import { styled } from "@mui/material";
+import { Container, styled } from "@mui/material";
 
 const drawerWidth = 240;
 
-const PageContainer = styled('main', {shouldForwardProp: (prop) => prop !== 'open'})<{
+const PageContainer = styled(Container, {shouldForwardProp: (prop) => prop !== 'open'})<{
   open?: boolean;
 }>(({theme, open}) => ({
   flexGrow: 1,
@@ -38,13 +38,13 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div>
+      <Container>
       <TopBar open={open} onDrawerOpen={handleDrawerOpen}/>
       <SideNav open={open} onDrawerOpen={handleDrawerOpen} onDrawerClose={handleDrawerClose}/>
       <PageContainer open={open} id="page-content-wrapper">
         <Outlet/>
       </PageContainer>
-    </div>
+        </Container>
   );
 };
 

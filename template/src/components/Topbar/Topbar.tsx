@@ -1,8 +1,10 @@
-import { IconButton, styled, Toolbar, Typography, useTheme } from "@mui/material";
+import { FormControlLabel, IconButton, styled, Switch, Toolbar, Typography, useTheme } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 
 import React, { useState } from "react";
 import MenuIcon from '@mui/icons-material/Menu';
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import {  changeThemeMode, selectThemeMode } from "../../appSlice";
 
 const drawerWidth = 240;
 
@@ -31,6 +33,8 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 const Topbar = ({open, onDrawerOpen}: any) => {
+  const themeMode = useAppSelector(selectThemeMode);
+  const dispatch = useAppDispatch();
 
   const handleDrawerOpen = () => {
     onDrawerOpen(true);
@@ -54,6 +58,11 @@ const Topbar = ({open, onDrawerOpen}: any) => {
           <Typography variant="h6" noWrap component="div">
             Mini variant drawer
           </Typography>
+          <FormControlLabel
+            style={{ marginLeft: 'auto'}}
+            control={<Switch checked={themeMode=='dark'} onChange={() => dispatch(changeThemeMode(themeMode))}/>}
+            label="Dark Mode"
+          />
         </Toolbar>
       </AppBar>
   );

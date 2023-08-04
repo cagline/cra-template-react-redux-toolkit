@@ -17,6 +17,7 @@ import React from "react";
 import { CalculateOutlined, ChecklistRtlOutlined, ChevronLeft, ChevronRight, Home } from '@mui/icons-material';
 import MuiDrawer from "@mui/material/Drawer/Drawer";
 import { useNavigate } from "react-router-dom";
+import logoUrl from "../../logo.jpg";
 
 
 const drawerWidth = 240;
@@ -90,6 +91,16 @@ const ImageButton = styled(ButtonBase)(({ theme }) => ({
   },
 }));
 
+const ImageSrc = styled('span')({
+  position: 'absolute',
+  left: 0,
+  right: 0,
+  top: 0,
+  bottom: 0,
+  backgroundSize: 'contain',
+  backgroundPosition: 'center center',
+  backgroundRepeat: 'no-repeat',
+});
 
 const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
   const theme = useTheme();
@@ -107,7 +118,9 @@ const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
   return (
     <Drawer variant="permanent" open={open}>
       <DrawerHeader>
-        <ImageButton onClick={() => { navigate(`/`) }}>CAG</ImageButton>
+        <ImageButton onClick={() => { navigate(`/`) }}>
+          <ImageSrc style={{ backgroundImage: `url(${logoUrl})` }} />
+        </ImageButton>
         <IconButton onClick={handleDrawerClose}>
           {theme.direction === 'rtl' ? <ChevronRight/> : <ChevronLeft/>}
         </IconButton>
