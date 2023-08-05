@@ -2,6 +2,9 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and includes Redux-Toolkit along with Material-UI (MUI) for styling.
 
+Having this kind a custom template is a fantastic way to share best practices and preferred toolsets with the community. 
+It can save time and effort for developers who want to start new projects with a specific setup.
+
 ## Use template
 
 To create a new project using this template, execute the following command:
