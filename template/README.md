@@ -28,12 +28,10 @@ This command runs the app in development mode. You can access the app in your br
 
 Here are some tasks that need to be completed or ideas to consider for the project:
 
-1) **Localization:** Implement localization to support multiple languages in the app.
+1) **Keycloak & Authorization:** Consider implementing Keycloak for authentication and authorization. There might be comments in the code that guide you through the setup. Also, I've another library to simplify this setup, but please note that it might not be up to date.
 
-2) **Keycloak & Authorization:** Consider implementing Keycloak for authentication and authorization. There might be comments in the code that guide you through the setup. Also, I've another library to simplify this setup, but please note that it might not be up to date.
+2) **Other Authentication / Authorization Ideas:** Explore additional ideas and best practices related to authentication and authorization, such as using OAuth, JWT, or other security mechanisms.
 
-3) **Other Authentication / Authorization Ideas:** Explore additional ideas and best practices related to authentication and authorization, such as using OAuth, JWT, or other security mechanisms.
-
-4) **Redux Persist:** Consider implementing Redux Persist to persist the Redux store across sessions, ensuring data retention and improving the user experience.
+3) **Redux Persist:** Consider implementing Redux Persist to persist the Redux store across sessions, ensuring data retention and improving the user experience.
 
 Please feel free to enhance the project based on these tasks and ideas. If you have any specific sections you'd like me to focus on, please let me know, and I'll be happy to further fine-tune the document.
