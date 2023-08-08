@@ -5,6 +5,29 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 Having this kind a custom template is a fantastic way to share best practices and preferred toolsets with the community. 
 It can save time and effort for developers who want to start new projects with a specific setup.
 
+## Features / Examples
+
+1. React Router Dom (Routes) 
+   * Three sample routes with layout using `<Outlet/>`
+2. Redux-toolkit (State Management / Data fetch)
+   * ToDo example for Data Fetch & Cache Tag System including State Management using RTK including 
+   * Counter example for State Management 
+3. MUI (UI framework)
+   * Dashboard layout using MUI including expandable Side Navigation / Top Bar
+4. React i18Next (Localization)
+
+## TODOs
+
+Here are some tasks that need to be completed or ideas to consider for the project:
+
+1) **Keycloak & Authorization:** Consider implementing Keycloak for authentication and authorization. There might be comments in the code that guide you through the setup. Also, I've another library to simplify this setup, but please note that it might not be up to date.
+
+2) **Other Authentication / Authorization Ideas:** Explore additional ideas and best practices related to authentication and authorization, such as using OAuth, JWT, or other security mechanisms.
+
+3) **Redux Persist:** Consider implementing Redux Persist to persist the Redux store across sessions, ensuring data retention and improving the user experience.
+
+Please feel free to enhance the project based on these tasks and ideas. If you have any specific sections you'd like me to focus on, please let me know, and I'll be happy to further fine-tune the document.
+
 ## Use template
 
 To create a new project using this template, execute the following command:
@@ -23,15 +46,3 @@ This command runs the JSON server, which provides mock APIs. You can access the 
 ### `npm start`
 
 This command runs the app in development mode. You can access the app in your browser at [http://localhost:3000](http://localhost:3000).
-
-## TODOs
-
-Here are some tasks that need to be completed or ideas to consider for the project:
-
-1) **Keycloak & Authorization:** Consider implementing Keycloak for authentication and authorization. There might be comments in the code that guide you through the setup. Also, I've another library to simplify this setup, but please note that it might not be up to date.
-
-2) **Other Authentication / Authorization Ideas:** Explore additional ideas and best practices related to authentication and authorization, such as using OAuth, JWT, or other security mechanisms.
-
-3) **Redux Persist:** Consider implementing Redux Persist to persist the Redux store across sessions, ensuring data retention and improving the user experience.
-
-Please feel free to enhance the project based on these tasks and ideas. If you have any specific sections you'd like me to focus on, please let me know, and I'll be happy to further fine-tune the document.
