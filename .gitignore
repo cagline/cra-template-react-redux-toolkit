@@ -25,4 +25,4 @@ yarn-error.log*
 .idea
 .my-app
 /my-app
-
+/.idea
