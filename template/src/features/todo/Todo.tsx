@@ -7,6 +7,7 @@ import {
     useUpdateToDoMutation,
 } from '../../api/todoApiSlice';
 import styles from "../counter/Counter.module.css";
+import { useTranslation } from "react-i18next";
 
 export default function Todo() {
     const [triggerGetToDosQuery, {data: toDos}] = useLazyGetToDosQuery();
@@ -15,6 +16,7 @@ export default function Todo() {
     const [triggerUpdateToDoMutation] = useUpdateToDoMutation();
     const [triggerDeleteToDoMutation] = useDeleteToDoMutation();
     const [todo, setTodo] = useState('');
+    const {t, i18n} = useTranslation();
 
     useEffect(() => {
         triggerGetToDosQuery().unwrap();
@@ -22,7 +24,7 @@ export default function Todo() {
 
     return (
         <div style={{ width: '50%', margin: '0 auto'}}>
-            <h4 style={{}}>ToDo API Slice</h4>
+            <h3 style={{}}>{t('todo.title')}</h3>
             <div style={{width: '400px', margin:'20px auto', display: "flex", flexDirection: 'row', flexGrow: 1 }}>
                 <input
                     value={todo}

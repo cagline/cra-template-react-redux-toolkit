@@ -18,6 +18,7 @@ import { CalculateOutlined, ChecklistRtlOutlined, ChevronLeft, ChevronRight, Hom
 import MuiDrawer from "@mui/material/Drawer/Drawer";
 import { useNavigate } from "react-router-dom";
 import logoUrl from "../../logo.jpg";
+import { useTranslation } from "react-i18next";
 
 
 const drawerWidth = 240;
@@ -105,6 +106,7 @@ const ImageSrc = styled('span')({
 const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const {t, i18n} = useTranslation();
 
 
   const handleDrawerOpen = () => {
@@ -138,7 +140,7 @@ const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
 
               <Home/>
             </ListItemIcon>
-            <ListItemText primary={'Dashboard'} sx={{opacity: open ? 1 : 0}}/>
+            <ListItemText primary={t('dashboard')} sx={{opacity: open ? 1 : 0}}/>
           </ListItemButton>
         </ListItem>
         <ListItem key={'Todo'} disablePadding sx={{display: 'block'}}>
@@ -152,7 +154,7 @@ const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
 
               <ChecklistRtlOutlined/>
             </ListItemIcon>
-            <ListItemText primary={'Todo'} sx={{opacity: open ? 1 : 0}}/>
+            <ListItemText primary={t('todo.title')} sx={{opacity: open ? 1 : 0}}/>
           </ListItemButton>
         </ListItem>
         <ListItem key={'Counter'} disablePadding sx={{display: 'block'}}>
@@ -165,7 +167,7 @@ const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
             <ListItemIcon sx={{minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center',}}>
               <CalculateOutlined/>
             </ListItemIcon>
-            <ListItemText primary={'Counter'} sx={{opacity: open ? 1 : 0}}/>
+            <ListItemText primary={t('counter.title')} sx={{opacity: open ? 1 : 0}}/>
           </ListItemButton>
         </ListItem>
       </List>

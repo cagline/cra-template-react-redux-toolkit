@@ -10,6 +10,7 @@ import {
   selectCount,
 } from './counterSlice';
 import styles from './Counter.module.css';
+import { useTranslation } from "react-i18next";
 
 export default function Counter() {
   const count = useAppSelector(selectCount);
@@ -17,10 +18,11 @@ export default function Counter() {
   const [incrementAmount, setIncrementAmount] = useState('2');
 
   const incrementValue = Number(incrementAmount) || 0;
+  const {t, i18n} = useTranslation();
 
   return (
     <div style={{ width: '50%', margin: '0 auto'}}>
-      <h4 style={{}}>Counter Slice</h4>
+      <h3 style={{}}>{t('counter.title')}</h3>
       <div className={styles.row}>
         <button
           className={styles.button}
