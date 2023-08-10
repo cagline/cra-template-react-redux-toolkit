@@ -45,6 +45,12 @@
   margin-right: 4px;
 }
 
+.checkbox {
+  width: 46px;
+  height: 46px;
+  margin: 0;
+}
+
 .button:hover,
 .button:focus {
   border: 2px solid rgba(112, 76, 182, 0.4);
@@ -76,4 +82,9 @@
   width: 0%;
   opacity: 1;
   transition: 0s;
+}
+
+.todoTitle{
+  font-size: 16px;
+  padding: 5px;
 }
