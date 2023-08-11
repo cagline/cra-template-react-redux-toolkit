@@ -44,17 +44,17 @@ export default function Todo() {
                 {toDos &&
                 toDos.map((todo: any) => (
                     <div key={todo.id} style={{display: "flex",flexDirection: 'row', alignContent: 'left', marginBottom: 10}}>
-                        <div style={{flexGrow:1, textAlign: "left"}}>{todo.title}</div>
                         <input
-                            style={{alignItems: "end", justifyItems: "end", alignSelf: 'end', margin: '16px 10px'}}
+                            className={styles.checkbox}
+                            style={{alignItems: "end", justifyItems: "end", alignSelf: 'end'}}
                             type={"checkbox"}
                             key={todo.id}
                             onChange={() => {
                                 triggerUpdateToDoMutation({...todo, isDone: !todo.isDone});
-                                todo.isDone = !todo.isDone;
                             }}
                             checked={todo.isDone}
                         />
+                        <div className={styles.todoTitle} style={{flexGrow:1, textAlign: "left", lineHeight:"46px"}}>{todo.title}</div>
                         <button
                             className={styles.button}
                             style={{alignItems: "end", justifyItems: "end", alignSelf: 'end'}}
