@@ -1,11 +1,9 @@
 import {BaseQueryFn, FetchArgs, fetchBaseQuery, FetchBaseQueryError,} from '@reduxjs/toolkit/query'
-// import { tokenReceived, loggedOut } from './authSlice'
-// const API_KEY = "ef867ca0-a6f4-4871-9135-907d77e7a21f";
+import config from '../config';
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: 'http://localhost:3001',
+    baseUrl: config.baseUrl,
     prepareHeaders(headers) {
-        // headers.set('x-api-key', API_KEY);
         headers.set('Content-Type', 'application/json')
         return headers;
     }
