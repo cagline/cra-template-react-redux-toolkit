@@ -45,7 +45,6 @@ const Topbar = ({open, onDrawerOpen}: any) => {
   const themeMode = useAppSelector(selectThemeMode);
   const dispatch = useAppDispatch();
   const {t, i18n} = useTranslation();
-  console.info('config',config);
 
   const handleDrawerOpen = () => {
     onDrawerOpen(true);

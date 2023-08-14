@@ -5,10 +5,8 @@ import AppRoutes from "./routes";
 import { createTheme, CssBaseline, FormControlLabel, Switch, ThemeProvider } from "@mui/material";
 import { useAppSelector } from "./store/hooks";
 import { selectThemeMode } from "./appSlice";
-import logger from './utils/logger';
 
 function App() {
-  logger.info('App', 'REACT_APP_VERSION', process.env.REACT_APP_VERSION);
 
   const themeMode = useAppSelector(selectThemeMode);
 
