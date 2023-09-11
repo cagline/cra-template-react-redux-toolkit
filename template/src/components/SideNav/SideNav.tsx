@@ -30,80 +30,80 @@ const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
-  transition: theme.transitions.create("width", {
+  transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
-  overflowX: "hidden",
+  overflowX: 'hidden',
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
-  transition: theme.transitions.create("width", {
+  transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  overflowX: "hidden",
+  overflowX: 'hidden',
   width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
+  [theme.breakpoints.up('sm')]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
 });
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" })(({ theme, open }) => ({
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
   width: drawerWidth,
   flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
+  whiteSpace: 'nowrap',
+  boxSizing: 'border-box',
   ...(open && {
     ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
+    '& .MuiDrawer-paper': openedMixin(theme),
   }),
   ...(!open && {
     ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
+    '& .MuiDrawer-paper': closedMixin(theme),
   }),
 }));
 
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
 const ImageButton = styled(ButtonBase)(({ theme }) => ({
-  position: "relative",
-  width: "100%",
+  position: 'relative',
+  width: '100%',
   height: 64,
-  [theme.breakpoints.down("sm")]: {
-    width: "100% !important", // Overrides inline-style
+  [theme.breakpoints.down('sm')]: {
+    width: '100% !important', // Overrides inline-style
     height: 100,
   },
-  "&:hover, &.Mui-focusVisible": {
+  '&:hover, &.Mui-focusVisible': {
     zIndex: 1,
-    "& .MuiImageBackdrop-root": {
+    '& .MuiImageBackdrop-root': {
       opacity: 0.15,
     },
-    "& .MuiImageMarked-root": {
+    '& .MuiImageMarked-root': {
       opacity: 0,
     },
-    "& .MuiTypography-root": {
-      border: "4px solid currentColor",
+    '& .MuiTypography-root': {
+      border: '4px solid currentColor',
     },
   },
 }));
 
-const ImageSrc = styled("span")({
-  position: "absolute",
+const ImageSrc = styled('span')({
+  position: 'absolute',
   left: 0,
   right: 0,
   top: 0,
   bottom: 0,
-  backgroundSize: "contain",
-  backgroundPosition: "center center",
-  backgroundRepeat: "no-repeat",
+  backgroundSize: 'contain',
+  backgroundPosition: 'center center',
+  backgroundRepeat: 'no-repeat',
 });
 
 const SideNav = ({ open, onDrawerOpen, onDrawerClose }: any) => {
