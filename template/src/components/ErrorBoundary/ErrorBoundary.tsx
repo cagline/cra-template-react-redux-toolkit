@@ -25,23 +25,23 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   render() {
     if (this.state.hasError) {
       return (
-        <Box sx={{ display: "flex", alignItems: "center", minHeight: "100vh" }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', minHeight: '100vh' }}>
           <Container maxWidth="md">
-            <SvgIcon sx={{ marginBottom: "2em", marginX: "auto", width: "6em", height: "6em", display: "block" }}>
+            <SvgIcon sx={{ marginBottom: '2em', marginX: 'auto', width: '6em', height: '6em', display: 'block' }}>
               <WarningIcon fill="red" />
             </SvgIcon>
-            <Typography sx={{ fontSize: [35], fontWeight: 700, letterSpacing: 2.5, textAlign: "center" }}>
+            <Typography sx={{ fontSize: [35], fontWeight: 700, letterSpacing: 2.5, textAlign: 'center' }}>
               Uh oh!
             </Typography>
             <Typography
               color="GrayText"
-              sx={{ fontSize: [25], fontWeight: 400, letterSpacing: 2.5, textAlign: "center" }}
+              sx={{ fontSize: [25], fontWeight: 400, letterSpacing: 2.5, textAlign: 'center' }}
             >
               Something went wrong. Please try again.
             </Typography>
 
             <Button
-              sx={{ display: "block", marginX: "auto", marginTop: "2em", paddingX: "3em", maxWidth: "90%" }}
+              sx={{ display: 'block', marginX: 'auto', marginTop: '2em', paddingX: '3em', maxWidth: '90%' }}
               variant="contained"
               size="large"
               onClick={() => (window.location.href = window.location.origin)}
