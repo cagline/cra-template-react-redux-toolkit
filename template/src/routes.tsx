@@ -1,28 +1,31 @@
+import { lazy } from "react";
 import { useRoutes } from "react-router-dom";
-import UnauthorizedLayout from "./layouts/UnauthorizedLayout";
-import Dashboard from "./features/dashboard/Dashboard";
 import DashboardLayout from "./layouts/DashboardLayout";
-import Home from "./features/home/Home";
-import About from "./features/help/Help";
-import Todo from "./features/todo/Todo";
-import Counter from "./features/counter/Counter";
+import UnauthorizedLayout from "./layouts/UnauthorizedLayout";
 
+const Error = lazy(() => import("./features/error/Error"));
+const Home = lazy(() => import("./features/home/Home"));
+const About = lazy(() => import("./features/help/Help"));
+const Todo = lazy(() => import("./features/todo/Todo"));
+const Counter = lazy(() => import("./features/counter/Counter"));
+const Dashboard = lazy(() => import("./features/dashboard/Dashboard"));
 
 export default function AppRoutes() {
   return useRoutes([
     {
-      element: <DashboardLayout/>,
+      element: <DashboardLayout />,
       children: [
-        {path: "/", element: <Dashboard/>},
-        {path: "counter", element: <Counter/>},
-        {path: "todo", element: <Todo/>}
-      ]
+        { path: "/", element: <Dashboard /> },
+        { path: "counter", element: <Counter /> },
+        { path: "todo", element: <Todo /> },
+        { path: "error", element: <Error /> },
+      ],
     },
     {
-      element: <UnauthorizedLayout/>,
+      element: <UnauthorizedLayout />,
       children: [
-        {path: "home", element: <Home/>},
-        {path: "about", element: <About/>}
+        { path: "home", element: <Home /> },
+        { path: "about", element: <About /> },
       ],
     },
   ]);
