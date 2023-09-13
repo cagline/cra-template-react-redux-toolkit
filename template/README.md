@@ -24,23 +24,36 @@ Leverage Material-UI (MUI) to create a visually appealing and responsive user in
 
 Implement localization with React i18Next, enabling multi-language support for your application.
 
+### 5. Error Boundaries
+
+A JavaScript error in a part of the UI shouldn’t break the whole app. Error boundaries are React components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of the component tree that crashed. 
+
 ## Extending the Project
 
 Consider exploring the following tasks and ideas to enhance the project further:
 
-### 1. Keycloak & Authorization
+### 1. Redux Persist
+       
+Enhance data retention and user experience by incorporating Redux Persist. This feature allows the Redux store to persist across sessions, ensuring valuable data continuity.
+Feel free to explore and implement these tasks to create a more robust and feature-rich application based on this template.
 
-Integrate Keycloak for robust authentication and authorization. You may find comments in the code that guide you through the setup process. Additionally, there's an alternative library that can simplify this integration. However, be mindful of its compatibility with the current project version.
+### 2. Injecting Environment Variables at Runtime (Using env-config.js): & Build Time Variables (Using .env files):
 
-### 2. Authentication & Authorization Best Practices
+Pros of Injecting Environment Variables at Runtime (Using env-config.js):
+Flexibility: Environment variables can be changed without rebuilding the application. This is particularly useful for scenarios where you need to manage different configurations for multiple deployment environments or domains.
+
+Dynamic Updates: You can change configuration values in real-time without redeploying, making it easier to adapt to changing requirements.
+
+Single Build: You only need to build the application once, and the same build can be used across different environments with different configurations.
+       
+
+### 3. Authentication & Authorization Best Practices
 
 Delve into additional authentication and authorization strategies, such as OAuth, JWT, and other security mechanisms. Understanding these practices can enhance the security and user experience of your application.
 
-### 3. Redux Persist
-
-Enhance data retention and user experience by incorporating Redux Persist. This feature allows the Redux store to persist across sessions, ensuring valuable data continuity.
-
-Feel free to explore and implement these tasks to create a more robust and feature-rich application based on this template.
+### 4. Keycloak & Authorization
+       
+Integrate Keycloak for robust authentication and authorization. You may find comments in the code that guide you through the setup process. Additionally, there's an alternative library that can simplify this integration. However, be mindful of its compatibility with the current project version.
 
 ## Using the Template
 

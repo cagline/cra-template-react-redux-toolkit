@@ -1,6 +1,6 @@
 import { FormControlLabel, IconButton, MenuItem, styled, Switch, Toolbar, Typography } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 
 
 import React, { useState } from "react";
@@ -8,6 +8,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { changeThemeMode, selectThemeMode } from "../../appSlice";
 import { Trans, useTranslation } from "react-i18next";
+import config from '../../config';
 
 const drawerWidth = 240;
 
@@ -44,7 +45,6 @@ const Topbar = ({open, onDrawerOpen}: any) => {
   const themeMode = useAppSelector(selectThemeMode);
   const dispatch = useAppDispatch();
   const {t, i18n} = useTranslation();
-
 
   const handleDrawerOpen = () => {
     onDrawerOpen(true);

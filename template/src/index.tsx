@@ -6,9 +6,11 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 import './utils/i18n';
+import logger from "./utils/logger";
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
+logger.info('App', 'REACT_APP_VERSION', process.env.REACT_APP_VERSION);
 
 root.render(
   <React.StrictMode>

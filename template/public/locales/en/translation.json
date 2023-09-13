@@ -9,5 +9,8 @@
   "counter": {
     "title": "Counter API Slice"
   },
-  "dashboard": "Dashboard"
+  "dashboard": "Dashboard",
+  "error": {
+    "title": "Error Force Crash"
+  }
 }

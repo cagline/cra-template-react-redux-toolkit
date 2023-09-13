@@ -1,27 +1,31 @@
-import React, { useState } from 'react';
-import './App.css';
+import React from 'react';
+import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { BrowserRouter } from "react-router-dom";
-import AppRoutes from "./routes";
-import { createTheme, CssBaseline, FormControlLabel, Switch, ThemeProvider } from "@mui/material";
-import { useAppSelector } from "./store/hooks";
 import { selectThemeMode } from "./appSlice";
+import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
+import AppRoutes from "./routes";
+import { useAppSelector } from "./store/hooks";
+
+import "./App.css";
 
 function App() {
   const themeMode = useAppSelector(selectThemeMode);
 
   const theme = createTheme({
     palette: {
-      mode: themeMode
+      mode: themeMode,
     },
   });
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <div className="App">
-          <CssBaseline/>
-          <AppRoutes/>
-        </div>
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <div className="App">
+            <CssBaseline />
+            <AppRoutes />
+          </div>
+        </BrowserRouter>
+      </ErrorBoundary>
     </ThemeProvider>
   );
 }
