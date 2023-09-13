@@ -24,6 +24,10 @@ Leverage Material-UI (MUI) to create a visually appealing and responsive user in
 
 Implement localization with React i18Next, enabling multi-language support for your application.
 
+### 5. Error Boundaries
+
+A JavaScript error in a part of the UI shouldn’t break the whole app. Error boundaries are React components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of the component tree that crashed. 
+
 ## Extending the Project
 
 Consider exploring the following tasks and ideas to enhance the project further:
