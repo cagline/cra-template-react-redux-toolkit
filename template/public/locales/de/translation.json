@@ -9,5 +9,8 @@
   "counter": {
     "title": "Schalter API Slice"
   },
-  "dashboard": "Armaturenbrett"
+  "dashboard": "Armaturenbrett",
+  "error": {
+    "title": "Fehler erzwingt Absturz"
+  }
 }

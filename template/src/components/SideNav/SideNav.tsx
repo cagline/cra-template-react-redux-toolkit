@@ -1,5 +1,6 @@
+import React from "react";
 import {
-  Button, ButtonBase,
+  ButtonBase,
   CSSObject,
   Divider,
   IconButton,
@@ -10,16 +11,20 @@ import {
   ListItemText,
   styled,
   Theme,
-  useTheme
+  useTheme,
 } from "@mui/material";
-import React from "react";
-
-import { CalculateOutlined, ChecklistRtlOutlined, ChevronLeft, ChevronRight, Home } from '@mui/icons-material';
+import {
+  CalculateOutlined,
+  ChecklistRtlOutlined,
+  ChevronLeft,
+  ChevronRight,
+  Home,
+  ErrorOutline,
+} from "@mui/icons-material";
 import MuiDrawer from "@mui/material/Drawer/Drawer";
 import { useNavigate } from "react-router-dom";
-import logoUrl from "../../logo.jpg";
 import { useTranslation } from "react-i18next";
-
+import logoUrl from "../../logo.jpg";
 
 const drawerWidth = 240;
 
@@ -44,24 +49,22 @@ const closedMixin = (theme: Theme): CSSObject => ({
   },
 });
 
-const Drawer = styled(MuiDrawer, {shouldForwardProp: (prop) => prop !== 'open'})(
-  ({theme, open}) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: 'nowrap',
+  boxSizing: 'border-box',
+  ...(open && {
+    ...openedMixin(theme),
+    '& .MuiDrawer-paper': openedMixin(theme),
   }),
-);
+  ...(!open && {
+    ...closedMixin(theme),
+    '& .MuiDrawer-paper': closedMixin(theme),
+  }),
+}));
 
-const DrawerHeader = styled('div')(({theme}) => ({
+const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-end',
@@ -103,11 +106,10 @@ const ImageSrc = styled('span')({
   backgroundRepeat: 'no-repeat',
 });
 
-const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
+const SideNav = ({ open, onDrawerOpen, onDrawerClose }: any) => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const {t, i18n} = useTranslation();
-
+  const { t, i18n } = useTranslation();
 
   const handleDrawerOpen = () => {
     onDrawerOpen(true);
@@ -120,54 +122,70 @@ const SideNav = ({open, onDrawerOpen, onDrawerClose}: any) => {
   return (
     <Drawer variant="permanent" open={open}>
       <DrawerHeader>
-        <ImageButton onClick={() => { navigate(`/`) }}>
+        <ImageButton
+          onClick={() => {
+            navigate(`/`);
+          }}
+        >
           <ImageSrc style={{ backgroundImage: `url(${logoUrl})` }} />
         </ImageButton>
         <IconButton onClick={handleDrawerClose}>
-          {theme.direction === 'rtl' ? <ChevronRight/> : <ChevronLeft/>}
+          {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
         </IconButton>
       </DrawerHeader>
-      <Divider/>
+      <Divider />
       <List>
-        <ListItem key={'Dashboard'} disablePadding sx={{display: 'block'}}>
+        <ListItem key={'Dashboard'} disablePadding sx={{ display: 'block' }}>
           <ListItemButton
-            sx={{minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5,}}
+            sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
             onClick={() => {
               navigate(`/`);
             }}
           >
-            <ListItemIcon sx={{minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center',}}>
-
-              <Home/>
+            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+              <Home />
             </ListItemIcon>
-            <ListItemText primary={t('dashboard')} sx={{opacity: open ? 1 : 0}}/>
+            <ListItemText primary={t('dashboard')} sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
         </ListItem>
-        <ListItem key={'Todo'} disablePadding sx={{display: 'block'}}>
+        <ListItem key={'Todo'} disablePadding sx={{ display: 'block' }}>
           <ListItemButton
-            sx={{minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5,}}
+            sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
             onClick={() => {
               navigate(`/todo`);
             }}
           >
-            <ListItemIcon sx={{minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center',}}>
-
-              <ChecklistRtlOutlined/>
+            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+              <ChecklistRtlOutlined />
             </ListItemIcon>
-            <ListItemText primary={t('todo.title')} sx={{opacity: open ? 1 : 0}}/>
+            <ListItemText primary={t('todo.title')} sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
         </ListItem>
-        <ListItem key={'Counter'} disablePadding sx={{display: 'block'}}>
+        <ListItem key={'Counter'} disablePadding sx={{ display: 'block' }}>
           <ListItemButton
-            sx={{minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5,}}
+            sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
             onClick={() => {
               navigate(`/counter`);
             }}
           >
-            <ListItemIcon sx={{minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center',}}>
-              <CalculateOutlined/>
+            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+              <CalculateOutlined />
             </ListItemIcon>
-            <ListItemText primary={t('counter.title')} sx={{opacity: open ? 1 : 0}}/>
+            <ListItemText primary={t('counter.title')} sx={{ opacity: open ? 1 : 0 }} />
+          </ListItemButton>
+        </ListItem>
+
+        <ListItem key={'Error'} disablePadding sx={{ display: 'block' }}>
+          <ListItemButton
+            sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+            onClick={() => {
+              navigate(`/error`);
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+              <ErrorOutline color="error" />
+            </ListItemIcon>
+            <ListItemText primary={t('error.title')} sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
         </ListItem>
       </List>
