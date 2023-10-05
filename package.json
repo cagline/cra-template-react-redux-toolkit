@@ -21,7 +21,9 @@
   },
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).",
   "main": "index.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "prettier": "^3.0.3"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cagline/cra-template-react-redux-toolkit.git"

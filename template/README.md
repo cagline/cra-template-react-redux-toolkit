@@ -72,3 +72,15 @@ This command starts the JSON server, providing mock APIs accessible at http://lo
 ### `npm start`
 Use this command to launch the app in development mode. You can access the application in your browser at http://localhost:3000.
 
+
+## Development(Contribute)
+simply anyone can clone the project then run the template and check first
+
+
+run inside the project
+
+`npx create-react-app my-app --template file:.`
+
+run in different location
+
+`npx create-react-app my-app --template file:../path/to/your/template/cra-template-[template-name]`
