@@ -2,6 +2,23 @@
 
 This project provides a customized template that combines Create React App, Redux-Toolkit, and Material-UI (MUI) to kickstart your React application development. By following this template, you can adhere to best practices and quickly establish a consistent and efficient project structure.
 
+## Using the Template
+
+To initiate a new project using this template, execute the following command:
+
+```sh
+npx create-react-app my-app --template react-redux-toolkit
+
+```
+
+After creating the project, navigate to the project directory and utilize the following scripts:
+
+### `npm run api`
+This command starts the JSON server, providing mock APIs accessible at http://localhost:3001. The JSON server is utilized for demonstration purposes, allowing you to interact with the TODO app.
+
+### `npm start`
+Use this command to launch the app in development mode. You can access the application in your browser at http://localhost:3000.
+
 ## Features
 
 ### 1. React Router Dom (Routes)
@@ -50,23 +67,6 @@ Delve into additional authentication and authorization strategies, such as OAuth
 ### 4. Keycloak & Authorization
        
 Integrate Keycloak for robust authentication and authorization. You may find comments in the code that guide you through the setup process. Additionally, there's an alternative library that can simplify this integration. However, be mindful of its compatibility with the current project version.
-
-## Using the Template
-
-To initiate a new project using this template, execute the following command:
-
-```sh
-npx create-react-app my-app --template react-redux-toolkit
-
-```
-
-After creating the project, navigate to the project directory and utilize the following scripts:
-
-### `npm run api`
-This command starts the JSON server, providing mock APIs accessible at http://localhost:3001. The JSON server is utilized for demonstration purposes, allowing you to interact with the TODO app.
-
-### `npm start`
-Use this command to launch the app in development mode. You can access the application in your browser at http://localhost:3000.
 
 ## Development(Contribute)
 simply anyone can clone the project then run the template and check first
