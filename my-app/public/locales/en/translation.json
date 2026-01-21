@@ -1,0 +1,16 @@
+{
+  "app": {
+    "title": "React + Redux-Toolkit + MUI + Typescript Boilerplate",
+    "darkMood": "Dark Mood"
+  },
+  "todo": {
+    "title": "ToDo API Slice"
+  },
+  "counter": {
+    "title": "Counter API Slice"
+  },
+  "dashboard": "Dashboard",
+  "error": {
+    "title": "Error Force Crash"
+  }
+}

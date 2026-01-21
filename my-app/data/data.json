@@ -1,0 +1,34 @@
+{
+  "todos": [
+    {
+      "id": 0,
+      "isDone": true,
+      "title": "Buy Groceries"
+    },
+    {
+      "id": 1,
+      "isDone": false,
+      "title": "Call Plumber"
+    },
+    {
+      "id": 2,
+      "isDone": true,
+      "title": "Cleaning"
+    },
+    {
+      "id": 3,
+      "isDone": false,
+      "title": "Mom's Medicine"
+    },
+    {
+      "id": 4,
+      "isDone": false,
+      "title": "Jogging"
+    },
+    {
+      "title": "Everything JS",
+      "isDone": false,
+      "id": 5
+    }
+  ]
+}
