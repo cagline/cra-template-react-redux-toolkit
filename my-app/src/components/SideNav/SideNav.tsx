@@ -188,7 +188,7 @@ const SideNav = ({ open, onDrawerOpen, onDrawerClose }: any) => {
           </ListItemButton>
         </ListItem>
       </List>
-      {process.env.REACT_APP_VERSION}
+      {import.meta.env.VITE_APP_VERSION}
     </Drawer>
   );
 };

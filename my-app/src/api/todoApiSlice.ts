@@ -43,7 +43,6 @@ export const apiSlice = createApi({
         deleteToDo: builder.mutation<ToDo, number>({
             query: (id) => ({
                 url: `todos/${id}`,
-                params: { id },
                 method: 'DELETE'
             }),
             invalidatesTags: ['todo']

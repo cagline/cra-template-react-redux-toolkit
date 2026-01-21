@@ -58,7 +58,10 @@ export default function Todo() {
                         <button
                             className={styles.button}
                             style={{alignItems: "end", justifyItems: "end", alignSelf: 'end'}}
-                            onClick={() => triggerDeleteToDoMutation(todo.id)}
+                            onClick={async () => {
+                                await triggerDeleteToDoMutation(todo.id).unwrap();
+                                triggerGetToDosQuery().unwrap();
+                            }}
                         >Delete</button>
                     </div>
                 ))}
