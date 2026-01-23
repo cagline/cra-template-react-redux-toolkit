@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../../store/store';
-import type { Order, Lot, SecurityHolding, StockSplit } from './types';
+import type { Order, Lot, SecurityHolding, StockSplit, ActionPriceRange } from './types';
 import { processOrdersIntoLots, calculateHoldings } from './utils/lotTracker';
 
 export interface PortfolioState {
@@ -10,6 +10,7 @@ export interface PortfolioState {
   holdings: Record<string, SecurityHolding>;
   currentPrices: Record<string, number>;
   stockSplits: StockSplit[];
+  actionPriceRanges: Record<string, ActionPriceRange>;
   isLoading: boolean;
   error: string | null;
 }
@@ -20,6 +21,7 @@ const initialState: PortfolioState = {
   holdings: {},
   currentPrices: {},
   stockSplits: [],
+  actionPriceRanges: {},
   isLoading: false,
   error: null,
 };
@@ -69,12 +71,16 @@ const portfolioSlice = createSlice({
       state.lots = processOrdersIntoLots(state.orders, state.stockSplits);
       state.holdings = calculateHoldings(state.lots, state.currentPrices);
     },
+    setActionPriceRanges: (state, action: PayloadAction<Record<string, ActionPriceRange>>) => {
+      state.actionPriceRanges = action.payload;
+    },
     clearPortfolio: (state) => {
       state.orders = [];
       state.lots = [];
       state.holdings = {};
       state.currentPrices = {};
       state.stockSplits = [];
+      state.actionPriceRanges = {};
       state.error = null;
     },
   },
@@ -89,6 +95,7 @@ export const {
   addStockSplit,
   removeStockSplit,
   setStockSplits,
+  setActionPriceRanges,
   clearPortfolio,
 } = portfolioSlice.actions;
 
@@ -100,5 +107,6 @@ export const selectCurrentPrices = (state: RootState) => state.portfolio.current
 export const selectPortfolioLoading = (state: RootState) => state.portfolio.isLoading;
 export const selectPortfolioError = (state: RootState) => state.portfolio.error;
 export const selectStockSplits = (state: RootState) => state.portfolio.stockSplits;
+export const selectActionPriceRanges = (state: RootState) => state.portfolio.actionPriceRanges;
 
 export default portfolioSlice.reducer;

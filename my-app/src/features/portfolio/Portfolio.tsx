@@ -42,6 +42,14 @@ import {
   PictureAsPdf as PdfIcon,
   Description as MarkdownIcon,
   TableChart as CsvIcon,
+  Code as JsonIcon,
+  ShoppingCart as BuyIcon,
+  AddCircle as AccumulateIcon,
+  PauseCircle as HoldIcon,
+  RemoveCircle as TrimIcon,
+  ExitToApp as ExitIcon,
+  StopCircle as StopIcon,
+  Psychology as AIIcon,
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
@@ -55,16 +63,20 @@ import {
   selectPortfolioLoading,
   selectPortfolioError,
   selectStockSplits,
+  selectActionPriceRanges,
   setCurrentPrice,
   setCurrentPrices,
   addStockSplit,
   removeStockSplit,
   setStockSplits,
+  setActionPriceRanges,
 } from './portfolioSlice';
-import { parseOrderTrackerCSV, parseWatchlistCSV, parsePortfolioCSV } from './utils/csvParser';
+import { parseOrderTrackerCSV, parseWatchlistCSV, parsePortfolioCSV, parseActionPriceRangesCSV } from './utils/csvParser';
 import { calculateRealizedGainLoss, verifySellOrders } from './utils/lotTracker';
 import { exportToCSV, exportToMarkdown, exportToPDF } from './utils/exportUtils';
-import type { Order, Lot, StockSplit, SecurityHolding } from './types';
+import { generateAllRecommendations } from './utils/recommendationEngine';
+import { exportAIMetadata, exportAIMarkdown, exportAIMetadataForActionRanges } from './utils/aiMetadataExport';
+import type { Lot, StockSplit, SecurityHolding } from './types';
 
 const Portfolio: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -73,6 +85,7 @@ const Portfolio: React.FC = () => {
   const holdings = useAppSelector(selectHoldings);
   const currentPrices = useAppSelector(selectCurrentPrices);
   const stockSplits = useAppSelector(selectStockSplits);
+  const actionPriceRanges = useAppSelector(selectActionPriceRanges);
   const isLoading = useAppSelector(selectPortfolioLoading);
   const error = useAppSelector(selectPortfolioError);
 
@@ -93,6 +106,10 @@ const Portfolio: React.FC = () => {
   }>>({});
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [exportMenuAnchor, setExportMenuAnchor] = useState<null | HTMLElement>(null);
+  const [aiExportMenuAnchor, setAiExportMenuAnchor] = useState<null | HTMLElement>(null);
+  
+  // Generate recommendations
+  const recommendations = generateAllRecommendations(holdings, actionPriceRanges);
 
   const handleFileUpload = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,6 +167,27 @@ const Portfolio: React.FC = () => {
         setPortfolioData(data);
       } catch (err) {
         dispatch(setError(err instanceof Error ? err.message : 'Failed to parse Portfolio CSV file'));
+      } finally {
+        dispatch(setLoading(false));
+      }
+    },
+    [dispatch]
+  );
+
+  const handleActionPriceRangesUpload = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      dispatch(setLoading(true));
+      dispatch(setError(null));
+
+      try {
+        const text = await file.text();
+        const ranges = parseActionPriceRangesCSV(text);
+        dispatch(setActionPriceRanges(ranges));
+      } catch (err) {
+        dispatch(setError(err instanceof Error ? err.message : 'Failed to parse Action Price Ranges CSV file'));
       } finally {
         dispatch(setLoading(false));
       }
@@ -224,6 +262,7 @@ const Portfolio: React.FC = () => {
     }
     return sum;
   }, 0);
+  const totalPortfolioValue = holdingsArray.reduce((sum, h) => sum + (h.marketValue || 0), 0);
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -318,6 +357,31 @@ const Portfolio: React.FC = () => {
               </label>
             </Box>
 
+            {/* Action Price Ranges Upload (Optional - for AI-generated CSV) */}
+            <Box>
+              <Box
+                component="input"
+                accept=".csv"
+                sx={{ display: 'none' }}
+                id="action-ranges-upload-input"
+                type="file"
+                onChange={handleActionPriceRangesUpload}
+                disabled={isLoading}
+              />
+              <label htmlFor="action-ranges-upload-input">
+                <Button
+                  variant="outlined"
+                  component="span"
+                  startIcon={<CloudUploadIcon />}
+                  disabled={isLoading}
+                  color="success"
+                  size="small"
+                >
+                  {isLoading ? <CircularProgress size={20} /> : 'Upload AI-Generated Action Ranges CSV'}
+                </Button>
+              </label>
+            </Box>
+
             {orders.length > 0 && (
               <Typography variant="body2" color="text.secondary">
                 {orders.length} orders loaded
@@ -342,6 +406,13 @@ const Portfolio: React.FC = () => {
           {Object.keys(portfolioData).length > 0 && (
             <Alert severity="success" sx={{ mt: 2 }}>
               Portfolio data loaded for {Object.keys(portfolioData).length} securities (commission & proceeds)
+            </Alert>
+          )}
+
+          {/* Show success message when action price ranges are loaded */}
+          {Object.keys(actionPriceRanges).length > 0 && (
+            <Alert severity="success" sx={{ mt: 2 }}>
+              Action price ranges loaded for {Object.keys(actionPriceRanges).length} securities. {Object.keys(recommendations).length} recommendations generated.
             </Alert>
           )}
 
@@ -552,8 +623,73 @@ const Portfolio: React.FC = () => {
           {holdingsArray.length > 0 && (
             <Card sx={{ mb: 4 }}>
               <CardContent>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
                   <Typography variant="h6">Current Holdings</Typography>
+                  {holdingsArray.length > 0 && (
+                    <Button
+                      variant="outlined"
+                      startIcon={<AIIcon />}
+                      onClick={(e) => setAiExportMenuAnchor(e.currentTarget)}
+                      color="secondary"
+                    >
+                      Export for AI
+                    </Button>
+                  )}
+                  <Menu
+                    anchorEl={aiExportMenuAnchor}
+                    open={Boolean(aiExportMenuAnchor)}
+                    onClose={() => setAiExportMenuAnchor(null)}
+                  >
+                    <MenuItem onClick={() => {
+                      const metadata = exportAIMetadataForActionRanges(holdings, totalPortfolioValue);
+                      const blob = new Blob([metadata], { type: 'application/json' });
+                      const link = document.createElement('a');
+                      const url = URL.createObjectURL(blob);
+                      link.setAttribute('href', url);
+                      link.setAttribute('download', `portfolio-action-ranges-request-${new Date().toISOString().split('T')[0]}.json`);
+                      link.style.visibility = 'hidden';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      setAiExportMenuAnchor(null);
+                    }}>
+                      <JsonIcon sx={{ mr: 1 }} fontSize="small" />
+                      Request AI: Generate Action Price Ranges CSV
+                    </MenuItem>
+                    <Divider />
+                    <MenuItem onClick={() => {
+                      const metadata = exportAIMetadata(holdings, recommendations, actionPriceRanges, totalPortfolioValue);
+                      const blob = new Blob([metadata], { type: 'application/json' });
+                      const link = document.createElement('a');
+                      const url = URL.createObjectURL(blob);
+                      link.setAttribute('href', url);
+                      link.setAttribute('download', `portfolio-ai-metadata-${new Date().toISOString().split('T')[0]}.json`);
+                      link.style.visibility = 'hidden';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      setAiExportMenuAnchor(null);
+                    }}>
+                      <JsonIcon sx={{ mr: 1 }} fontSize="small" />
+                      Export Portfolio Analysis (JSON with Lot Details)
+                    </MenuItem>
+                    <MenuItem onClick={() => {
+                      const markdown = exportAIMarkdown(holdings, recommendations, actionPriceRanges, totalPortfolioValue);
+                      const blob = new Blob([markdown], { type: 'text/markdown' });
+                      const link = document.createElement('a');
+                      const url = URL.createObjectURL(blob);
+                      link.setAttribute('href', url);
+                      link.setAttribute('download', `portfolio-ai-analysis-${new Date().toISOString().split('T')[0]}.md`);
+                      link.style.visibility = 'hidden';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      setAiExportMenuAnchor(null);
+                    }}>
+                      <MarkdownIcon sx={{ mr: 1 }} fontSize="small" />
+                      Export Full Analysis (Markdown)
+                    </MenuItem>
+                  </Menu>
                 </Box>
                 <TableContainer>
                   <Table>
@@ -567,6 +703,7 @@ const Portfolio: React.FC = () => {
                         <TableCell align="right">Market Value</TableCell>
                         <TableCell align="right">Unrealized G/L</TableCell>
                         <TableCell align="right">Unrealized G/L %</TableCell>
+                        <TableCell align="center">Recommendation</TableCell>
                         <TableCell align="center">Actions</TableCell>
                       </TableRow>
                     </TableHead>
@@ -643,6 +780,34 @@ const Portfolio: React.FC = () => {
                               />
                             ) : (
                               '-'
+                            )}
+                          </TableCell>
+                          <TableCell align="center">
+                            {recommendations[holding.security] ? (
+                              <Chip
+                                icon={
+                                  recommendations[holding.security].recommendation === 'BUY_NEW' ? <BuyIcon /> :
+                                  recommendations[holding.security].recommendation === 'ADD_ACCUMULATE' ? <AccumulateIcon /> :
+                                  recommendations[holding.security].recommendation === 'HOLD' ? <HoldIcon /> :
+                                  recommendations[holding.security].recommendation === 'TRIM' ? <TrimIcon /> :
+                                  recommendations[holding.security].recommendation === 'EXIT' ? <ExitIcon /> :
+                                  recommendations[holding.security].recommendation === 'STRONG_STOP_TAKE_PROFIT' ? <StopIcon /> :
+                                  undefined
+                                }
+                                label={recommendations[holding.security].recommendation.replace(/_/g, ' ')}
+                                size="small"
+                                color={
+                                  recommendations[holding.security].recommendation === 'EXIT' ? 'error' :
+                                  recommendations[holding.security].recommendation === 'STRONG_STOP_TAKE_PROFIT' ? 'warning' :
+                                  recommendations[holding.security].recommendation === 'TRIM' ? 'warning' :
+                                  recommendations[holding.security].recommendation === 'BUY_NEW' ? 'success' :
+                                  recommendations[holding.security].recommendation === 'ADD_ACCUMULATE' ? 'info' :
+                                  'default'
+                                }
+                                title={recommendations[holding.security].reason}
+                              />
+                            ) : (
+                              <Chip label="No Data" size="small" color="default" variant="outlined" />
                             )}
                           </TableCell>
                           <TableCell align="center">

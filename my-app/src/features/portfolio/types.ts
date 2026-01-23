@@ -59,12 +59,54 @@ export type StockSplit = {
   ratio: number; // e.g., 3 for 3:1 split, 0.5 for 1:2 reverse split
 };
 
+export type ActionPriceRange = {
+  security: string;
+  quantity: number;
+  avgPrice: number;
+  breakEvenSellPrice: number;
+  lastPrice?: number;
+  change?: number;
+  changePercent?: number;
+  accumulateSlowly?: string; // e.g., "245–250"
+  strongAddZone?: string; // e.g., "235–240"
+  reEvaluateIfWeak?: string; // e.g., "Below 230"
+  pauseBuys?: string; // e.g., "260–270"
+  trimSmallPortion?: string; // e.g., "280+"
+  investmentPercentage?: number;
+  trailingStop?: number;
+};
+
+export type TradingRecommendation = 
+  | 'BUY_NEW'
+  | 'ADD_ACCUMULATE'
+  | 'HOLD'
+  | 'TRIM'
+  | 'EXIT'
+  | 'STRONG_STOP_TAKE_PROFIT';
+
+export type SecurityRecommendation = {
+  security: string;
+  recommendation: TradingRecommendation;
+  confidence: 'HIGH' | 'MEDIUM' | 'LOW';
+  reason: string;
+  currentPrice: number;
+  targetZones: {
+    accumulateSlowly?: { min: number; max: number };
+    strongAddZone?: { min: number; max: number };
+    reEvaluateIfWeak?: number;
+    pauseBuys?: { min: number; max: number };
+    trimSmallPortion?: number;
+    trailingStop?: number;
+  };
+};
+
 export type PortfolioState = {
   orders: Order[];
   lots: Lot[];
   holdings: Record<string, SecurityHolding>;
   currentPrices: Record<string, number>;
   stockSplits: StockSplit[];
+  actionPriceRanges: Record<string, ActionPriceRange>;
   isLoading: boolean;
   error: string | null;
 };

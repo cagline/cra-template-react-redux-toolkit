@@ -1,4 +1,4 @@
-import type { Order } from '../types';
+import type { Order, ActionPriceRange } from '../types';
 
 /**
  * Parses a CSV file from ATrad Order Tracker
@@ -294,4 +294,86 @@ export function parsePortfolioCSV(csvText: string): Record<string, {
   }
 
   return portfolioData;
+}
+
+/**
+ * Parses Action Price Ranges CSV file
+ * Format: Company Code,Quantity,Avg Price,B.E.S Price,Last,Change,% Change,Accumulate Slowly,Strong Add Zone,Re-evaluate if Market Weak,Pause Buys,Trim Small Portion,Investment_Percentage,Time,Trailing Stop (SELL if below)
+ */
+export function parseActionPriceRangesCSV(csvText: string): Record<string, ActionPriceRange> {
+  const lines = csvText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+  
+  if (lines.length < 2) {
+    throw new Error('Invalid CSV format: Expected at least header and one data row');
+  }
+
+  const headerLine = lines[0];
+  const headers = parseCSVLine(headerLine);
+
+  // Find column indices
+  const companyCodeIndex = headers.findIndex(h => h.toLowerCase().includes('company code') || h.toLowerCase().includes('security'));
+  const quantityIndex = headers.findIndex(h => h.toLowerCase().includes('quantity'));
+  const avgPriceIndex = headers.findIndex(h => h.toLowerCase().includes('avg price') || h.toLowerCase().includes('average price'));
+  const breakEvenSellPriceIndex = headers.findIndex(h => h.toLowerCase().includes('b.e.s') || h.toLowerCase().includes('break even'));
+  const lastIndex = headers.findIndex(h => h.toLowerCase().includes('last'));
+  const changeIndex = headers.findIndex(h => h.toLowerCase().includes('change') && !h.toLowerCase().includes('%'));
+  const changePercentIndex = headers.findIndex(h => h.toLowerCase().includes('% change') || (h.toLowerCase().includes('change') && h.toLowerCase().includes('%')));
+  const accumulateSlowlyIndex = headers.findIndex(h => h.toLowerCase().includes('accumulate slowly'));
+  const strongAddZoneIndex = headers.findIndex(h => h.toLowerCase().includes('strong add zone'));
+  const reEvaluateIndex = headers.findIndex(h => h.toLowerCase().includes('re-evaluate') || h.toLowerCase().includes('reevaluate'));
+  const pauseBuysIndex = headers.findIndex(h => h.toLowerCase().includes('pause buys'));
+  const trimSmallPortionIndex = headers.findIndex(h => h.toLowerCase().includes('trim small portion'));
+  const investmentPercentageIndex = headers.findIndex(h => h.toLowerCase().includes('investment_percentage') || h.toLowerCase().includes('investment percentage'));
+  const trailingStopIndex = headers.findIndex(h => h.toLowerCase().includes('trailing stop'));
+
+  if (companyCodeIndex === -1 || quantityIndex === -1 || avgPriceIndex === -1) {
+    throw new Error('Invalid CSV format: Missing required columns (Company Code, Quantity, Avg Price)');
+  }
+
+  const actionRanges: Record<string, ActionPriceRange> = {};
+
+  // Process data rows (skip header)
+  for (let i = 1; i < lines.length; i++) {
+    const values = parseCSVLine(lines[i]);
+    
+    if (values.length < 3) continue; // Skip empty or invalid rows
+
+    const security = values[companyCodeIndex]?.trim();
+    if (!security) continue;
+
+    const quantity = parseNumber(values[quantityIndex] || '0');
+    const avgPrice = parseNumber(values[avgPriceIndex] || '0');
+    const breakEvenSellPrice = parseNumber(values[breakEvenSellPriceIndex] || avgPrice.toString());
+    const lastPrice = values[lastIndex] ? parseNumber(values[lastIndex]) : undefined;
+    const change = values[changeIndex] ? parseNumber(values[changeIndex]) : undefined;
+    const changePercent = values[changePercentIndex] ? parseNumber(values[changePercentIndex]) : undefined;
+    const accumulateSlowly = values[accumulateSlowlyIndex]?.trim() || undefined;
+    const strongAddZone = values[strongAddZoneIndex]?.trim() || undefined;
+    const reEvaluateIfWeak = values[reEvaluateIndex]?.trim() || undefined;
+    const pauseBuys = values[pauseBuysIndex]?.trim() || undefined;
+    const trimSmallPortion = values[trimSmallPortionIndex]?.trim() || undefined;
+    const investmentPercentage = values[investmentPercentageIndex] 
+      ? parseFloat(values[investmentPercentageIndex].replace('%', '').trim()) 
+      : undefined;
+    const trailingStop = values[trailingStopIndex] ? parseNumber(values[trailingStopIndex]) : undefined;
+
+    actionRanges[security] = {
+      security,
+      quantity,
+      avgPrice,
+      breakEvenSellPrice,
+      lastPrice,
+      change,
+      changePercent,
+      accumulateSlowly,
+      strongAddZone,
+      reEvaluateIfWeak,
+      pauseBuys,
+      trimSmallPortion,
+      investmentPercentage,
+      trailingStop,
+    };
+  }
+
+  return actionRanges;
 }
