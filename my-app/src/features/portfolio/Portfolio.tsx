@@ -22,6 +22,13 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  Divider,
 } from '@mui/material';
 import {
   CloudUpload as CloudUploadIcon,
@@ -29,6 +36,12 @@ import {
   TrendingDown as TrendingDownIcon,
   Add as AddIcon,
   Delete as DeleteIcon,
+  ExpandMore as ExpandMoreIcon,
+  Search as SearchIcon,
+  Download as DownloadIcon,
+  PictureAsPdf as PdfIcon,
+  Description as MarkdownIcon,
+  TableChart as CsvIcon,
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
@@ -50,7 +63,8 @@ import {
 } from './portfolioSlice';
 import { parseOrderTrackerCSV, parseWatchlistCSV, parsePortfolioCSV } from './utils/csvParser';
 import { calculateRealizedGainLoss, verifySellOrders } from './utils/lotTracker';
-import type { Order, Lot, StockSplit } from './types';
+import { exportToCSV, exportToMarkdown, exportToPDF } from './utils/exportUtils';
+import type { Order, Lot, StockSplit, SecurityHolding } from './types';
 
 const Portfolio: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -77,6 +91,8 @@ const Portfolio: React.FC = () => {
     salesProceeds: number;
     unrealizedGainLoss: number;
   }>>({});
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [exportMenuAnchor, setExportMenuAnchor] = useState<null | HTMLElement>(null);
 
   const handleFileUpload = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -656,6 +672,23 @@ const Portfolio: React.FC = () => {
             lots={lots} 
             holdings={holdings} 
             stockSplits={stockSplits}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            exportMenuAnchor={exportMenuAnchor}
+            onExportMenuOpen={(event) => setExportMenuAnchor(event.currentTarget)}
+            onExportMenuClose={() => setExportMenuAnchor(null)}
+            onExportCSV={() => {
+              exportToCSV(holdings, stockSplits);
+              setExportMenuAnchor(null);
+            }}
+            onExportMarkdown={() => {
+              exportToMarkdown(holdings, stockSplits);
+              setExportMenuAnchor(null);
+            }}
+            onExportPDF={() => {
+              exportToPDF(holdings, stockSplits);
+              setExportMenuAnchor(null);
+            }}
             onAddSplit={(security) => {
               setNewSplit({ 
                 security, 
@@ -766,44 +799,155 @@ const LotWiseAnalysis: React.FC<{
   lots: Lot[];
   holdings: Record<string, SecurityHolding>;
   stockSplits: StockSplit[];
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
+  exportMenuAnchor: HTMLElement | null;
+  onExportMenuOpen: (event: React.MouseEvent<HTMLElement>) => void;
+  onExportMenuClose: () => void;
+  onExportCSV: () => void;
+  onExportMarkdown: () => void;
+  onExportPDF: () => void;
   onAddSplit: (security: string) => void;
   onRemoveSplit: (splitId: string) => void;
-}> = ({ lots, holdings, stockSplits, onAddSplit, onRemoveSplit }) => {
-  const holdingsArray = Object.values(holdings).sort((a, b) =>
-    a.security.localeCompare(b.security)
-  );
+}> = ({ 
+  lots, 
+  holdings, 
+  stockSplits, 
+  searchQuery,
+  onSearchChange,
+  exportMenuAnchor,
+  onExportMenuOpen,
+  onExportMenuClose,
+  onExportCSV,
+  onExportMarkdown,
+  onExportPDF,
+  onAddSplit, 
+  onRemoveSplit 
+}) => {
+  const holdingsArray = Object.values(holdings)
+    .filter(holding => 
+      searchQuery === '' || 
+      holding.security.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => a.security.localeCompare(b.security));
 
   return (
     <Card>
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Lot-wise Gain/Loss Analysis
-        </Typography>
-        <Typography variant="body2" color="text.secondary" paragraph>
-          Each BUY order is tracked as a separate lot. SELL orders are matched using FIFO method.
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 2 }}>
+          <Box>
+            <Typography variant="h6" gutterBottom>
+              Lot-wise Gain/Loss Analysis
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Each BUY order is tracked as a separate lot. SELL orders are matched using FIFO method.
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            <TextField
+              size="small"
+              placeholder="Search securities..."
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ minWidth: 200 }}
+            />
+            <Button
+              variant="contained"
+              startIcon={<DownloadIcon />}
+              onClick={onExportMenuOpen}
+              color="primary"
+            >
+              Export
+            </Button>
+            <Menu
+              anchorEl={exportMenuAnchor}
+              open={Boolean(exportMenuAnchor)}
+              onClose={onExportMenuClose}
+            >
+              <MenuItem onClick={onExportCSV}>
+                <CsvIcon sx={{ mr: 1 }} fontSize="small" />
+                Export as CSV
+              </MenuItem>
+              <MenuItem onClick={onExportMarkdown}>
+                <MarkdownIcon sx={{ mr: 1 }} fontSize="small" />
+                Export as Markdown
+              </MenuItem>
+              <Divider />
+              <MenuItem onClick={onExportPDF}>
+                <PdfIcon sx={{ mr: 1 }} fontSize="small" />
+                Export as PDF
+              </MenuItem>
+            </Menu>
+          </Box>
+        </Box>
+        
+        {searchQuery && (
+          <Alert severity="info" sx={{ mb: 2 }}>
+            Showing {holdingsArray.length} security{holdingsArray.length !== 1 ? 'ies' : ''} matching "{searchQuery}"
+          </Alert>
+        )}
 
-        {holdingsArray.map((holding) => {
-          // Get stock splits for this security
-          const securitySplits = stockSplits
-            .filter(split => split.security === holding.security)
-            .sort((a, b) => new Date(a.splitDateTime).getTime() - new Date(b.splitDateTime).getTime());
+        {holdingsArray.length === 0 ? (
+          <Alert severity="info">
+            {searchQuery ? 'No securities found matching your search.' : 'No holdings data available.'}
+          </Alert>
+        ) : (
+          holdingsArray.map((holding) => {
+            // Get stock splits for this security
+            const securitySplits = stockSplits
+              .filter(split => split.security === holding.security)
+              .sort((a, b) => new Date(a.splitDateTime).getTime() - new Date(b.splitDateTime).getTime());
 
-          return (
-            <Box key={holding.security} sx={{ mb: 4 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h6" sx={{ color: 'primary.main' }}>
-                  {holding.security}
-                </Typography>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  startIcon={<AddIcon />}
-                  onClick={() => onAddSplit(holding.security)}
+            return (
+              <Accordion key={holding.security} defaultExpanded sx={{ mb: 2 }}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  sx={{
+                    backgroundColor: 'action.hover',
+                    '&:hover': {
+                      backgroundColor: 'action.selected',
+                    },
+                  }}
                 >
-                  Add Split
-                </Button>
-              </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', pr: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Typography variant="h6" sx={{ color: 'primary.main' }}>
+                        {holding.security}
+                      </Typography>
+                      <Chip
+                        label={`${holding.totalQuantity.toFixed(0)} shares`}
+                        size="small"
+                        variant="outlined"
+                      />
+                      {holding.currentPrice && holding.unrealizedGainLoss !== undefined && (
+                        <Chip
+                          label={`${holding.unrealizedGainLoss >= 0 ? '+' : ''}${holding.unrealizedGainLoss.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (${holding.unrealizedGainLossPercent !== undefined && holding.unrealizedGainLossPercent >= 0 ? '+' : ''}${holding.unrealizedGainLossPercent?.toFixed(2)}%)`}
+                          size="small"
+                          color={holding.unrealizedGainLoss >= 0 ? 'success' : 'error'}
+                        />
+                      )}
+                    </Box>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      startIcon={<AddIcon />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onAddSplit(holding.security);
+                      }}
+                    >
+                      Add Split
+                    </Button>
+                  </Box>
+                </AccordionSummary>
+                <AccordionDetails>
 
               {/* Stock Splits for this security */}
               {securitySplits.length > 0 && (
@@ -850,20 +994,20 @@ const LotWiseAnalysis: React.FC<{
                 </Box>
               )}
 
-              <TableContainer component={Paper} variant="outlined">
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Buy Date</TableCell>
-                    <TableCell align="right">Buy Price</TableCell>
-                    <TableCell align="right">Quantity</TableCell>
-                    <TableCell align="right">Remaining</TableCell>
-                    <TableCell align="right">Total Cost</TableCell>
-                    <TableCell align="right">Sell Details</TableCell>
-                    <TableCell align="right">Realized G/L</TableCell>
-                    <TableCell align="right">Unrealized G/L</TableCell>
-                  </TableRow>
-                </TableHead>
+                  <TableContainer component={Paper} variant="outlined" sx={{ maxHeight: 600, overflow: 'auto' }}>
+                    <Table size="small" stickyHeader>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell sx={{ fontWeight: 'bold', backgroundColor: 'background.paper' }}>Buy Date</TableCell>
+                          <TableCell align="right" sx={{ fontWeight: 'bold', backgroundColor: 'background.paper' }}>Buy Price</TableCell>
+                          <TableCell align="right" sx={{ fontWeight: 'bold', backgroundColor: 'background.paper' }}>Quantity</TableCell>
+                          <TableCell align="right" sx={{ fontWeight: 'bold', backgroundColor: 'background.paper' }}>Remaining</TableCell>
+                          <TableCell align="right" sx={{ fontWeight: 'bold', backgroundColor: 'background.paper' }}>Total Cost</TableCell>
+                          <TableCell align="right" sx={{ fontWeight: 'bold', backgroundColor: 'background.paper', minWidth: 200 }}>Sell Details</TableCell>
+                          <TableCell align="right" sx={{ fontWeight: 'bold', backgroundColor: 'background.paper' }}>Realized G/L</TableCell>
+                          <TableCell align="right" sx={{ fontWeight: 'bold', backgroundColor: 'background.paper' }}>Unrealized G/L</TableCell>
+                        </TableRow>
+                      </TableHead>
                 <TableBody>
                   {holding.lots.map((lot) => {
                     const totalRealizedGainLoss = lot.sellOrders.reduce(
@@ -940,28 +1084,34 @@ const LotWiseAnalysis: React.FC<{
                         </TableCell>
                         <TableCell align="right">
                           {lot.sellOrders.length > 0 ? (
-                            <Box>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, alignItems: 'flex-end' }}>
                               {lot.sellOrders.map((sell, idx) => (
                                 <Box
                                   key={idx}
                                   sx={{
-                                    mb: 0.5,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 0.5,
                                     fontSize: '0.75rem',
-                                    color: 'text.secondary',
                                   }}
                                 >
-                                  {sell.quantity} @ {sell.sellPrice.toFixed(2)} on {sell.sellDate}
+                                  <Typography variant="caption" color="text.secondary">
+                                    {sell.quantity} @ {sell.sellPrice.toFixed(2)}
+                                  </Typography>
+                                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
+                                    ({sell.sellDate})
+                                  </Typography>
                                   <Chip
                                     label={`${sell.gainLoss >= 0 ? '+' : ''}${sell.gainLoss.toFixed(2)} (${sell.gainLossPercent >= 0 ? '+' : ''}${sell.gainLossPercent.toFixed(2)}%)`}
                                     size="small"
                                     color={sell.gainLoss >= 0 ? 'success' : 'error'}
-                                    sx={{ ml: 1 }}
+                                    sx={{ height: 18, fontSize: '0.65rem' }}
                                   />
                                 </Box>
                               ))}
                             </Box>
                           ) : (
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
                               Not sold
                             </Typography>
                           )}
@@ -992,12 +1142,14 @@ const LotWiseAnalysis: React.FC<{
                       </TableRow>
                     );
                   })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Box>
-          );
-        })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </AccordionDetails>
+              </Accordion>
+            );
+          })
+        )}
       </CardContent>
     </Card>
   );
