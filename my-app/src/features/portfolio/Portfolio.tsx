@@ -265,7 +265,7 @@ const Portfolio: React.FC = () => {
   const totalPortfolioValue = holdingsArray.reduce((sum, h) => sum + (h.marketValue || 0), 0);
 
   return (
-    <Container maxWidth="xl" sx={{ py: 4 }}>
+    <Container maxWidth={false} sx={{ py: 4, px: { xs: 2, sm: 3, md: 4 }, maxWidth: '1920px', width: '100%' }}>
       <Typography variant="h4" gutterBottom>
         Stock Portfolio Analysis
       </Typography>
