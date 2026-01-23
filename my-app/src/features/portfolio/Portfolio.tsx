@@ -54,13 +54,11 @@ import {
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   setOrders,
-  setLoading,
   setError,
   selectOrders,
   selectLots,
   selectHoldings,
   selectCurrentPrices,
-  selectPortfolioLoading,
   selectPortfolioError,
   selectStockSplits,
   selectActionPriceRanges,
@@ -86,7 +84,6 @@ const Portfolio: React.FC = () => {
   const currentPrices = useAppSelector(selectCurrentPrices);
   const stockSplits = useAppSelector(selectStockSplits);
   const actionPriceRanges = useAppSelector(selectActionPriceRanges);
-  const isLoading = useAppSelector(selectPortfolioLoading);
   const error = useAppSelector(selectPortfolioError);
 
   const [priceDialogOpen, setPriceDialogOpen] = useState(false);
@@ -107,6 +104,12 @@ const Portfolio: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [exportMenuAnchor, setExportMenuAnchor] = useState<null | HTMLElement>(null);
   const [aiExportMenuAnchor, setAiExportMenuAnchor] = useState<null | HTMLElement>(null);
+  const [uploading, setUploading] = useState({
+    orders: false,
+    watchlist: false,
+    portfolio: false,
+    actionRanges: false,
+  });
   
   // Generate recommendations
   const recommendations = generateAllRecommendations(holdings, actionPriceRanges);
@@ -116,8 +119,8 @@ const Portfolio: React.FC = () => {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      dispatch(setLoading(true));
       dispatch(setError(null));
+      setUploading(prev => ({ ...prev, orders: true }));
 
       try {
         const text = await file.text();
@@ -126,7 +129,8 @@ const Portfolio: React.FC = () => {
       } catch (err) {
         dispatch(setError(err instanceof Error ? err.message : 'Failed to parse CSV file'));
       } finally {
-        dispatch(setLoading(false));
+        setUploading(prev => ({ ...prev, orders: false }));
+        event.target.value = '';
       }
     },
     [dispatch]
@@ -137,8 +141,8 @@ const Portfolio: React.FC = () => {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      dispatch(setLoading(true));
       dispatch(setError(null));
+      setUploading(prev => ({ ...prev, watchlist: true }));
 
       try {
         const text = await file.text();
@@ -147,7 +151,8 @@ const Portfolio: React.FC = () => {
       } catch (err) {
         dispatch(setError(err instanceof Error ? err.message : 'Failed to parse Watchlist CSV file'));
       } finally {
-        dispatch(setLoading(false));
+        setUploading(prev => ({ ...prev, watchlist: false }));
+        event.target.value = '';
       }
     },
     [dispatch]
@@ -158,8 +163,8 @@ const Portfolio: React.FC = () => {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      dispatch(setLoading(true));
       dispatch(setError(null));
+      setUploading(prev => ({ ...prev, portfolio: true }));
 
       try {
         const text = await file.text();
@@ -168,7 +173,8 @@ const Portfolio: React.FC = () => {
       } catch (err) {
         dispatch(setError(err instanceof Error ? err.message : 'Failed to parse Portfolio CSV file'));
       } finally {
-        dispatch(setLoading(false));
+        setUploading(prev => ({ ...prev, portfolio: false }));
+        event.target.value = '';
       }
     },
     [dispatch]
@@ -179,8 +185,8 @@ const Portfolio: React.FC = () => {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      dispatch(setLoading(true));
       dispatch(setError(null));
+      setUploading(prev => ({ ...prev, actionRanges: true }));
 
       try {
         const text = await file.text();
@@ -189,7 +195,8 @@ const Portfolio: React.FC = () => {
       } catch (err) {
         dispatch(setError(err instanceof Error ? err.message : 'Failed to parse Action Price Ranges CSV file'));
       } finally {
-        dispatch(setLoading(false));
+        setUploading(prev => ({ ...prev, actionRanges: false }));
+        event.target.value = '';
       }
     },
     [dispatch]
@@ -295,16 +302,23 @@ const Portfolio: React.FC = () => {
                 id="csv-upload-input"
                 type="file"
                 onChange={handleFileUpload}
-                disabled={isLoading}
+                disabled={uploading.orders}
               />
               <label htmlFor="csv-upload-input">
                 <Button
                   variant="contained"
                   component="span"
                   startIcon={<CloudUploadIcon />}
-                  disabled={isLoading}
+                  disabled={uploading.orders}
                 >
-                  {isLoading ? <CircularProgress size={20} /> : 'Upload Order Tracker CSV'}
+                  {uploading.orders ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <CircularProgress size={18} />
+                      Uploading...
+                    </Box>
+                  ) : (
+                    'Upload Order Tracker CSV'
+                  )}
                 </Button>
               </label>
             </Box>
@@ -318,17 +332,24 @@ const Portfolio: React.FC = () => {
                 id="watchlist-upload-input"
                 type="file"
                 onChange={handleWatchlistUpload}
-                disabled={isLoading}
+                disabled={uploading.watchlist}
               />
               <label htmlFor="watchlist-upload-input">
                 <Button
                   variant="contained"
                   component="span"
                   startIcon={<CloudUploadIcon />}
-                  disabled={isLoading}
+                  disabled={uploading.watchlist}
                   color="secondary"
                 >
-                  {isLoading ? <CircularProgress size={20} /> : 'Upload Watchlist CSV (Update Prices)'}
+                  {uploading.watchlist ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <CircularProgress size={18} />
+                      Uploading...
+                    </Box>
+                  ) : (
+                    'Upload Watchlist CSV (Update Prices)'
+                  )}
                 </Button>
               </label>
             </Box>
@@ -342,17 +363,24 @@ const Portfolio: React.FC = () => {
                 id="portfolio-upload-input"
                 type="file"
                 onChange={handlePortfolioUpload}
-                disabled={isLoading}
+                disabled={uploading.portfolio}
               />
               <label htmlFor="portfolio-upload-input">
                 <Button
                   variant="contained"
                   component="span"
                   startIcon={<CloudUploadIcon />}
-                  disabled={isLoading}
+                  disabled={uploading.portfolio}
                   color="info"
                 >
-                  {isLoading ? <CircularProgress size={20} /> : 'Upload Portfolio CSV (Commission Data)'}
+                  {uploading.portfolio ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <CircularProgress size={18} />
+                      Uploading...
+                    </Box>
+                  ) : (
+                    'Upload Portfolio CSV (Commission Data)'
+                  )}
                 </Button>
               </label>
             </Box>
@@ -366,18 +394,25 @@ const Portfolio: React.FC = () => {
                 id="action-ranges-upload-input"
                 type="file"
                 onChange={handleActionPriceRangesUpload}
-                disabled={isLoading}
+                disabled={uploading.actionRanges}
               />
               <label htmlFor="action-ranges-upload-input">
                 <Button
                   variant="outlined"
                   component="span"
                   startIcon={<CloudUploadIcon />}
-                  disabled={isLoading}
+                  disabled={uploading.actionRanges}
                   color="success"
                   size="small"
                 >
-                  {isLoading ? <CircularProgress size={20} /> : 'Upload AI-Generated Action Ranges CSV'}
+                  {uploading.actionRanges ? (
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <CircularProgress size={18} />
+                      Uploading...
+                    </Box>
+                  ) : (
+                    'Upload AI-Generated Action Ranges CSV'
+                  )}
                 </Button>
               </label>
             </Box>
