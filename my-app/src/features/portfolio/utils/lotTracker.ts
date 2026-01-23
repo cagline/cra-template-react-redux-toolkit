@@ -185,25 +185,171 @@ export function calculateHoldings(
 
 /**
  * Calculates total realized gain/loss from all sold lots
+ * If portfolioData is provided, uses actual sales proceeds and deducts commission
  */
-export function calculateRealizedGainLoss(lots: Lot[]): {
+export function calculateRealizedGainLoss(
+  lots: Lot[],
+  portfolioData?: Record<string, { salesCommission: number; salesProceeds: number }>
+): {
   totalRealizedGainLoss: number;
+  totalProceeds: number;
+  totalCostBasis: number;
+  totalCommission: number;
   bySecurity: Record<string, number>;
 } {
-  const bySecurity: Record<string, number> = {};
+  const bySecurity: Record<string, {
+    realizedGainLoss: number;
+    proceeds: number;
+    costBasis: number;
+    commission: number;
+  }> = {};
+  
   let total = 0;
+  let totalProceeds = 0;
+  let totalCostBasis = 0;
+  let totalCommission = 0;
 
+  // First, calculate from lots (without commission)
   for (const lot of lots) {
     for (const sellMatch of lot.sellOrders) {
+      const proceeds = sellMatch.proceeds;
+      const costBasis = sellMatch.quantity * lot.buyPrice;
       const gainLoss = sellMatch.gainLoss;
-      total += gainLoss;
       
       if (!bySecurity[lot.security]) {
-        bySecurity[lot.security] = 0;
+        bySecurity[lot.security] = {
+          realizedGainLoss: 0,
+          proceeds: 0,
+          costBasis: 0,
+          commission: 0,
+        };
       }
-      bySecurity[lot.security] += gainLoss;
+      
+      bySecurity[lot.security].realizedGainLoss += gainLoss;
+      bySecurity[lot.security].proceeds += proceeds;
+      bySecurity[lot.security].costBasis += costBasis;
     }
   }
 
-  return { totalRealizedGainLoss: total, bySecurity };
+  // If portfolio data is provided, adjust for commission and use actual proceeds
+  if (portfolioData) {
+    for (const security in portfolioData) {
+      const data = portfolioData[security];
+      if (bySecurity[security]) {
+        // Use actual sales proceeds from Portfolio CSV
+        const actualProceeds = data.salesProceeds;
+        const commission = data.salesCommission;
+        
+        // Recalculate realized gain/loss: Proceeds - Cost Basis - Commission
+        bySecurity[security].proceeds = actualProceeds;
+        bySecurity[security].commission = commission;
+        bySecurity[security].realizedGainLoss = 
+          actualProceeds - bySecurity[security].costBasis - commission;
+      }
+    }
+  }
+
+  // Sum up totals
+  for (const security in bySecurity) {
+    const data = bySecurity[security];
+    total += data.realizedGainLoss;
+    totalProceeds += data.proceeds;
+    totalCostBasis += data.costBasis;
+    totalCommission += data.commission;
+  }
+
+  return { 
+    totalRealizedGainLoss: total, 
+    totalProceeds,
+    totalCostBasis,
+    totalCommission,
+    bySecurity: Object.fromEntries(
+      Object.entries(bySecurity).map(([sec, data]) => [sec, data.realizedGainLoss])
+    ),
+  };
+}
+
+/**
+ * Verifies SELL orders are properly matched and identifies any gaps
+ */
+export function verifySellOrders(lots: Lot[], orders: Order[]): {
+  allSellOrders: Order[];
+  matchedSells: number;
+  unmatchedSells: Order[];
+  totalSellProceeds: number;
+  totalCostBasis: number;
+  expectedRealizedGainLoss: number;
+  bySecurity: Record<string, {
+    sellOrders: Order[];
+    matched: number;
+    unmatched: number;
+  }>;
+} {
+  const allSellOrders = orders.filter(o => o.side === 'SELL');
+  const matchedOrderIds = new Set<string>();
+  const bySecurity: Record<string, {
+    sellOrders: Order[];
+    matched: number;
+    unmatched: number;
+  }> = {};
+
+  // Find all matched sell orders
+  for (const lot of lots) {
+    for (const sellMatch of lot.sellOrders) {
+      matchedOrderIds.add(sellMatch.sellOrderId);
+    }
+  }
+
+  // Categorize sell orders
+  for (const sellOrder of allSellOrders) {
+    if (!bySecurity[sellOrder.security]) {
+      bySecurity[sellOrder.security] = {
+        sellOrders: [],
+        matched: 0,
+        unmatched: 0,
+      };
+    }
+    bySecurity[sellOrder.security].sellOrders.push(sellOrder);
+    
+    if (matchedOrderIds.has(sellOrder.id)) {
+      bySecurity[sellOrder.security].matched++;
+    } else {
+      bySecurity[sellOrder.security].unmatched++;
+    }
+  }
+
+  const matchedSells = matchedOrderIds.size;
+  const unmatchedSells = allSellOrders.filter(o => !matchedOrderIds.has(o.id));
+
+  // Log unmatched SELL orders for debugging
+  if (unmatchedSells.length > 0) {
+    console.warn(`Found ${unmatchedSells.length} unmatched SELL orders:`, unmatchedSells.map(o => ({
+      security: o.security,
+      qty: o.orderQty,
+      price: o.orderPrice,
+      date: o.orderDate,
+      id: o.id,
+    })));
+  }
+
+  // Calculate totals from matched orders
+  let totalSellProceeds = 0;
+  let totalCostBasis = 0;
+
+  for (const lot of lots) {
+    for (const sellMatch of lot.sellOrders) {
+      totalSellProceeds += sellMatch.proceeds;
+      totalCostBasis += sellMatch.quantity * lot.buyPrice;
+    }
+  }
+
+  return {
+    allSellOrders,
+    matchedSells,
+    unmatchedSells,
+    totalSellProceeds,
+    totalCostBasis,
+    expectedRealizedGainLoss: totalSellProceeds - totalCostBasis,
+    bySecurity,
+  };
 }

@@ -43,12 +43,13 @@ import {
   selectPortfolioError,
   selectStockSplits,
   setCurrentPrice,
+  setCurrentPrices,
   addStockSplit,
   removeStockSplit,
   setStockSplits,
 } from './portfolioSlice';
-import { parseOrderTrackerCSV } from './utils/csvParser';
-import { calculateRealizedGainLoss } from './utils/lotTracker';
+import { parseOrderTrackerCSV, parseWatchlistCSV, parsePortfolioCSV } from './utils/csvParser';
+import { calculateRealizedGainLoss, verifySellOrders } from './utils/lotTracker';
 import type { Order, Lot, StockSplit } from './types';
 
 const Portfolio: React.FC = () => {
@@ -71,6 +72,11 @@ const Portfolio: React.FC = () => {
     splitDateTime: '',
     ratio: 1,
   });
+  const [portfolioData, setPortfolioData] = useState<Record<string, {
+    salesCommission: number;
+    salesProceeds: number;
+    unrealizedGainLoss: number;
+  }>>({});
 
   const handleFileUpload = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,6 +92,48 @@ const Portfolio: React.FC = () => {
         dispatch(setOrders(parsedOrders));
       } catch (err) {
         dispatch(setError(err instanceof Error ? err.message : 'Failed to parse CSV file'));
+      } finally {
+        dispatch(setLoading(false));
+      }
+    },
+    [dispatch]
+  );
+
+  const handleWatchlistUpload = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      dispatch(setLoading(true));
+      dispatch(setError(null));
+
+      try {
+        const text = await file.text();
+        const priceMap = parseWatchlistCSV(text);
+        dispatch(setCurrentPrices(priceMap));
+      } catch (err) {
+        dispatch(setError(err instanceof Error ? err.message : 'Failed to parse Watchlist CSV file'));
+      } finally {
+        dispatch(setLoading(false));
+      }
+    },
+    [dispatch]
+  );
+
+  const handlePortfolioUpload = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      dispatch(setLoading(true));
+      dispatch(setError(null));
+
+      try {
+        const text = await file.text();
+        const data = parsePortfolioCSV(text);
+        setPortfolioData(data);
+      } catch (err) {
+        dispatch(setError(err instanceof Error ? err.message : 'Failed to parse Portfolio CSV file'));
       } finally {
         dispatch(setLoading(false));
       }
@@ -143,10 +191,23 @@ const Portfolio: React.FC = () => {
     }
   }, [stockSplits]);
 
-  const realizedGainLoss = calculateRealizedGainLoss(lots);
+  const realizedGainLoss = calculateRealizedGainLoss(lots, portfolioData);
+  const verification = verifySellOrders(lots, orders);
   const holdingsArray = Object.values(holdings).sort((a, b) =>
     a.security.localeCompare(b.security)
   );
+  
+  // Calculate total unrealized gain/loss from all holdings (using current prices from Watchlist)
+  const totalUnrealizedGainLoss = holdingsArray.reduce(
+    (sum, holding) => sum + (holding.unrealizedGainLoss || 0),
+    0
+  );
+  const totalUnrealizedGainLossPercent = holdingsArray.reduce((sum, holding) => {
+    if (holding.totalCost > 0 && holding.unrealizedGainLoss !== undefined) {
+      return sum + (holding.unrealizedGainLoss / holding.totalCost) * 100 * (holding.totalCost / holdingsArray.reduce((s, h) => s + h.totalCost, 0));
+    }
+    return sum;
+  }, 0);
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -166,26 +227,81 @@ const Portfolio: React.FC = () => {
       {/* CSV Upload Section */}
       <Card sx={{ mb: 4 }}>
         <CardContent>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-            <Box
-              component="input"
-              accept=".csv"
-              sx={{ display: 'none' }}
-              id="csv-upload-input"
-              type="file"
-              onChange={handleFileUpload}
-              disabled={isLoading}
-            />
-            <label htmlFor="csv-upload-input">
-              <Button
-                variant="contained"
-                component="span"
-                startIcon={<CloudUploadIcon />}
+          <Typography variant="h6" gutterBottom>
+            Upload Files
+          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+            {/* Order Tracker Upload */}
+            <Box>
+              <Box
+                component="input"
+                accept=".csv"
+                sx={{ display: 'none' }}
+                id="csv-upload-input"
+                type="file"
+                onChange={handleFileUpload}
                 disabled={isLoading}
-              >
-                {isLoading ? <CircularProgress size={20} /> : 'Upload Order Tracker CSV'}
-              </Button>
-            </label>
+              />
+              <label htmlFor="csv-upload-input">
+                <Button
+                  variant="contained"
+                  component="span"
+                  startIcon={<CloudUploadIcon />}
+                  disabled={isLoading}
+                >
+                  {isLoading ? <CircularProgress size={20} /> : 'Upload Order Tracker CSV'}
+                </Button>
+              </label>
+            </Box>
+
+            {/* Watchlist Upload */}
+            <Box>
+              <Box
+                component="input"
+                accept=".csv"
+                sx={{ display: 'none' }}
+                id="watchlist-upload-input"
+                type="file"
+                onChange={handleWatchlistUpload}
+                disabled={isLoading}
+              />
+              <label htmlFor="watchlist-upload-input">
+                <Button
+                  variant="contained"
+                  component="span"
+                  startIcon={<CloudUploadIcon />}
+                  disabled={isLoading}
+                  color="secondary"
+                >
+                  {isLoading ? <CircularProgress size={20} /> : 'Upload Watchlist CSV (Update Prices)'}
+                </Button>
+              </label>
+            </Box>
+
+            {/* Portfolio CSV Upload */}
+            <Box>
+              <Box
+                component="input"
+                accept=".csv"
+                sx={{ display: 'none' }}
+                id="portfolio-upload-input"
+                type="file"
+                onChange={handlePortfolioUpload}
+                disabled={isLoading}
+              />
+              <label htmlFor="portfolio-upload-input">
+                <Button
+                  variant="contained"
+                  component="span"
+                  startIcon={<CloudUploadIcon />}
+                  disabled={isLoading}
+                  color="info"
+                >
+                  {isLoading ? <CircularProgress size={20} /> : 'Upload Portfolio CSV (Commission Data)'}
+                </Button>
+              </label>
+            </Box>
+
             {orders.length > 0 && (
               <Typography variant="body2" color="text.secondary">
                 {orders.length} orders loaded
@@ -196,6 +312,39 @@ const Portfolio: React.FC = () => {
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
               {error}
+            </Alert>
+          )}
+
+          {/* Show success message when prices are loaded */}
+          {Object.keys(currentPrices).length > 0 && (
+            <Alert severity="success" sx={{ mt: 2 }}>
+              Current prices loaded for {Object.keys(currentPrices).length} securities
+            </Alert>
+          )}
+
+          {/* Show success message when portfolio data is loaded */}
+          {Object.keys(portfolioData).length > 0 && (
+            <Alert severity="success" sx={{ mt: 2 }}>
+              Portfolio data loaded for {Object.keys(portfolioData).length} securities (commission & proceeds)
+            </Alert>
+          )}
+
+          {/* Verification Results */}
+          {orders.length > 0 && verification.unmatchedSells.length > 0 && (
+            <Alert severity="warning" sx={{ mt: 2 }}>
+              <Typography variant="body2" fontWeight="bold" gutterBottom>
+                Warning: {verification.unmatchedSells.length} unmatched SELL orders found
+              </Typography>
+              <Typography variant="caption" component="div">
+                {verification.unmatchedSells.slice(0, 5).map((order, idx) => (
+                  <div key={idx}>
+                    {order.security}: {order.orderQty} @ {order.orderPrice} on {order.orderDate}
+                  </div>
+                ))}
+                {verification.unmatchedSells.length > 5 && (
+                  <div>... and {verification.unmatchedSells.length - 5} more</div>
+                )}
+              </Typography>
             </Alert>
           )}
 
@@ -248,10 +397,140 @@ const Portfolio: React.FC = () => {
                       maximumFractionDigits: 2,
                     })}
                   </Typography>
+                  {realizedGainLoss.totalCommission > 0 && (
+                    <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.5 }}>
+                      Commission: {realizedGainLoss.totalCommission.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </Typography>
+                  )}
+                  {verification.unmatchedSells.length > 0 && (
+                    <Typography variant="caption" color="warning.main" display="block" sx={{ mt: 0.5 }}>
+                      {verification.unmatchedSells.length} unmatched sells
+                    </Typography>
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Card>
+                <CardContent>
+                  <Typography color="text.secondary" gutterBottom>
+                    Total Unrealized Gain/Loss
+                    {Object.keys(currentPrices).length > 0 && (
+                      <Chip 
+                        label="Live" 
+                        size="small" 
+                        color="success" 
+                        sx={{ ml: 1, height: 18, fontSize: '0.65rem' }}
+                      />
+                    )}
+                  </Typography>
+                  <Typography
+                    variant="h4"
+                    color={totalUnrealizedGainLoss >= 0 ? 'success.main' : 'error.main'}
+                  >
+                    {totalUnrealizedGainLoss >= 0 ? '+' : ''}
+                    {totalUnrealizedGainLoss.toLocaleString('en-US', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                  </Typography>
+                  {Object.keys(currentPrices).length === 0 && (
+                    <Typography variant="caption" color="warning.main" display="block" sx={{ mt: 0.5 }}>
+                      Upload Watchlist CSV for current prices
+                    </Typography>
+                  )}
+                  {Object.keys(currentPrices).length > 0 && holdingsArray.length > 0 && (
+                    <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: 0.5 }}>
+                      Based on {Object.keys(currentPrices).length} current prices
+                    </Typography>
+                  )}
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
+
+          {/* Verification Section */}
+          {orders.length > 0 && (
+            <Card sx={{ mb: 4 }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Verification & Debug Info
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="body2" color="text.secondary">
+                      Total SELL Orders: {verification.allSellOrders.length}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Matched: {verification.matchedSells}
+                    </Typography>
+                    <Typography variant="body2" color={verification.unmatchedSells.length > 0 ? 'warning.main' : 'text.secondary'}>
+                      Unmatched: {verification.unmatchedSells.length}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="body2" color="text.secondary">
+                      Total Sell Proceeds: {verification.totalSellProceeds.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Total Cost Basis: {verification.totalCostBasis.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </Typography>
+                    {realizedGainLoss.totalCommission > 0 && (
+                      <Typography variant="body2" color="text.secondary">
+                        Total Commission: {realizedGainLoss.totalCommission.toLocaleString('en-US', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </Typography>
+                    )}
+                  </Grid>
+                </Grid>
+                {verification.unmatchedSells.length > 0 && (
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="subtitle2" color="warning.main" gutterBottom>
+                      Unmatched SELL Orders (may indicate missing BUY orders or data issues):
+                    </Typography>
+                    <TableContainer>
+                      <Table size="small">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Security</TableCell>
+                            <TableCell align="right">Qty</TableCell>
+                            <TableCell align="right">Price</TableCell>
+                            <TableCell>Date</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {verification.unmatchedSells.slice(0, 10).map((order, idx) => (
+                            <TableRow key={idx}>
+                              <TableCell>{order.security}</TableCell>
+                              <TableCell align="right">{order.orderQty}</TableCell>
+                              <TableCell align="right">{order.orderPrice.toFixed(2)}</TableCell>
+                              <TableCell>{order.orderDate}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    {verification.unmatchedSells.length > 10 && (
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+                        ... and {verification.unmatchedSells.length - 10} more unmatched orders
+                      </Typography>
+                    )}
+                  </Box>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {/* Holdings Overview */}
           {holdingsArray.length > 0 && (
