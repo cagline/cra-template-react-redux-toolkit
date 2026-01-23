@@ -19,6 +19,7 @@ import {
   ChevronRight,
   Home,
   ErrorOutline,
+  AccountBalanceWallet,
 } from "@mui/icons-material";
 import MuiDrawer from "@mui/material/Drawer";
 import { useNavigate } from "react-router-dom";
@@ -171,6 +172,19 @@ const SideNav = ({ open, onDrawerOpen, onDrawerClose }: any) => {
               <CalculateOutlined />
             </ListItemIcon>
             <ListItemText primary={t('counter.title')} sx={{ opacity: open ? 1 : 0 }} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem key={'Portfolio'} disablePadding sx={{ display: 'block' }}>
+          <ListItemButton
+            sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+            onClick={() => {
+              navigate(`/portfolio`);
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+              <AccountBalanceWallet />
+            </ListItemIcon>
+            <ListItemText primary="Portfolio" sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
         </ListItem>
 

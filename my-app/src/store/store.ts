@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import type { ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import appReducer from '../appSlice';
+import portfolioReducer from '../features/portfolio/portfolioSlice';
 import {apiSlice as todoApiSlice} from '../api/todoApiSlice';
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     app: appReducer,
+    portfolio: portfolioReducer,
     [todoApiSlice.reducerPath] : todoApiSlice.reducer,
   },
   middleware: getDefaultMiddleware =>

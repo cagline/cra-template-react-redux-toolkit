@@ -1,0 +1,160 @@
+import type { Order } from '../types';
+
+/**
+ * Parses a CSV file from ATrad Order Tracker
+ * Handles the specific format with headers and data rows
+ */
+export function parseOrderTrackerCSV(csvText: string): Order[] {
+  const lines = csvText.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+  
+  if (lines.length < 3) {
+    throw new Error('Invalid CSV format: Expected at least 3 lines (title, empty, header)');
+  }
+
+  // Find the header row (usually line 2, index 2)
+  // Look for line containing "Security,Side,Order Qty"
+  let headerIndex = -1;
+  for (let i = 0; i < Math.min(5, lines.length); i++) {
+    if (lines[i].includes('Security') && lines[i].includes('Side') && lines[i].includes('Order Qty')) {
+      headerIndex = i;
+      break;
+    }
+  }
+
+  if (headerIndex === -1) {
+    throw new Error('Invalid CSV format: Could not find header row');
+  }
+
+  const headerLine = lines[headerIndex];
+  const headers = parseCSVLine(headerLine);
+
+  // Find column indices
+  const securityIndex = headers.findIndex(h => h.toLowerCase().includes('security'));
+  const sideIndex = headers.findIndex(h => h.toLowerCase().includes('side'));
+  const orderQtyIndex = headers.findIndex(h => h.toLowerCase().includes('order qty'));
+  const orderPriceIndex = headers.findIndex(h => h.toLowerCase().includes('order price'));
+  const orderValueIndex = headers.findIndex(h => h.toLowerCase().includes('order value'));
+  const orderStatusIndex = headers.findIndex(h => h.toLowerCase().includes('order status'));
+  const remainingQtyIndex = headers.findIndex(h => h.toLowerCase().includes('remaining qty'));
+  const filledQtyIndex = headers.findIndex(h => h.toLowerCase().includes('filled qty'));
+  const orderDateTimeIndex = headers.findIndex(h => h.toLowerCase().includes('order date and time'));
+  const exchangeOrderIdIndex = headers.findIndex(h => h.toLowerCase().includes('exchange order id'));
+
+  if (securityIndex === -1 || sideIndex === -1 || orderQtyIndex === -1 || orderPriceIndex === -1) {
+    throw new Error('Invalid CSV format: Missing required columns');
+  }
+
+  const orders: Order[] = [];
+  const processedExchangeOrderIds = new Set<string>();
+
+  // Process data rows (starting after header)
+  for (let i = headerIndex + 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line || line.trim().length === 0) continue;
+
+    const values = parseCSVLine(line);
+    
+    if (values.length < Math.max(securityIndex, sideIndex, orderQtyIndex, orderPriceIndex) + 1) {
+      continue; // Skip incomplete rows
+    }
+
+    const security = values[securityIndex]?.trim();
+    const side = values[sideIndex]?.trim().toUpperCase();
+    const orderStatus = values[orderStatusIndex]?.trim() || '';
+    const remainingQty = parseNumber(values[remainingQtyIndex] || '0');
+    const filledQty = parseNumber(values[filledQtyIndex] || '0');
+    const exchangeOrderId = values[exchangeOrderIdIndex]?.trim() || '';
+
+    // Only process FILLED orders
+    if (orderStatus !== 'FILLED') {
+      continue;
+    }
+
+    // For orders with same Exchange Order Id, only process the one with Remaining Qty = 0
+    if (exchangeOrderId) {
+      if (processedExchangeOrderIds.has(exchangeOrderId)) {
+        continue; // Already processed this exchange order
+      }
+      if (remainingQty !== 0) {
+        continue; // Skip partial fills, wait for the complete fill
+      }
+      processedExchangeOrderIds.add(exchangeOrderId);
+    }
+
+    if (!security || (side !== 'BUY' && side !== 'SELL')) {
+      continue;
+    }
+
+    const orderQty = parseNumber(values[orderQtyIndex] || '0');
+    const orderPrice = parseNumber(values[orderPriceIndex] || '0');
+    const orderValue = parseNumber(values[orderValueIndex] || '0');
+    const orderDateTime = values[orderDateTimeIndex]?.trim() || '';
+
+    // Parse date and time
+    let orderDate = '';
+    let orderTime = '';
+    if (orderDateTime) {
+      const dateTimeMatch = orderDateTime.match(/(\d{4}-\d{2}-\d{2})\s+(\d{2}:\d{2}:\d{2})/);
+      if (dateTimeMatch) {
+        orderDate = dateTimeMatch[1];
+        orderTime = dateTimeMatch[2];
+      }
+    }
+
+    const order: Order = {
+      id: `${exchangeOrderId || `order-${i}`}-${Date.now()}-${Math.random()}`,
+      security,
+      side: side as 'BUY' | 'SELL',
+      orderQty,
+      orderPrice,
+      orderValue: orderValue || orderQty * orderPrice,
+      orderDate,
+      orderTime,
+      orderDateTime,
+      exchangeOrderId,
+      filledQty: filledQty || orderQty,
+      remainingQty,
+      orderStatus,
+    };
+
+    orders.push(order);
+  }
+
+  return orders;
+}
+
+/**
+ * Parses a CSV line handling quoted fields
+ */
+function parseCSVLine(line: string): string[] {
+  const result: string[] = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    
+    if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === ',' && !inQuotes) {
+      result.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  
+  result.push(current.trim());
+  return result;
+}
+
+/**
+ * Parses a number from string, handling commas and other formatting
+ */
+function parseNumber(value: string): number {
+  if (!value) return 0;
+  // Remove commas and other formatting
+  const cleaned = value.toString().replace(/,/g, '').trim();
+  const parsed = parseFloat(cleaned);
+  return isNaN(parsed) ? 0 : parsed;
+}
