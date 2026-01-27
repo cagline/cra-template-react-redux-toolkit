@@ -19,6 +19,8 @@ import {
   ChevronRight,
   Home,
   ErrorOutline,
+  GroupsOutlined,
+  AssessmentOutlined,
 } from "@mui/icons-material";
 import MuiDrawer from "@mui/material/Drawer";
 import { useNavigate } from "react-router-dom";
@@ -185,6 +187,37 @@ const SideNav = ({ open, onDrawerOpen, onDrawerClose }: any) => {
               <ErrorOutline color="error" />
             </ListItemIcon>
             <ListItemText primary={t('error.title')} sx={{ opacity: open ? 1 : 0 }} />
+          </ListItemButton>
+        </ListItem>
+
+        <Divider sx={{ my: 1 }} />
+
+        {/* Micro Frontend Modules */}
+        <ListItem key={'ModuleA'} disablePadding sx={{ display: 'block' }}>
+          <ListItemButton
+            sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+            onClick={() => {
+              navigate(`/module-a`);
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+              <GroupsOutlined color="primary" />
+            </ListItemIcon>
+            <ListItemText primary="Module A" sx={{ opacity: open ? 1 : 0 }} />
+          </ListItemButton>
+        </ListItem>
+
+        <ListItem key={'ModuleB'} disablePadding sx={{ display: 'block' }}>
+          <ListItemButton
+            sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
+            onClick={() => {
+              navigate(`/module-b`);
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : 'auto', justifyContent: 'center' }}>
+              <AssessmentOutlined color="secondary" />
+            </ListItemIcon>
+            <ListItemText primary="Module B" sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
         </ListItem>
       </List>
