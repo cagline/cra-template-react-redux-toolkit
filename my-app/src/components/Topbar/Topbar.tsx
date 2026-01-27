@@ -9,7 +9,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { changeThemeMode, selectThemeMode } from "../../appSlice";
 import { Trans, useTranslation } from "react-i18next";
-import config from '../../config';
+import type { SelectChangeEvent } from '@mui/material/Select';
+import { usePageTitle } from "../../layouts/usePageTitle";
 
 const drawerWidth = 240;
 
@@ -41,19 +42,23 @@ const languages = [
   {lang: 'de', nativeName: 'Deutsch'}
 ];
 
-const Topbar = ({open, onDrawerOpen}: any) => {
+type TopbarProps = {
+  open?: boolean;
+  onDrawerOpen: (open: boolean) => void;
+};
+
+const Topbar: React.FC<TopbarProps> = ({ open, onDrawerOpen }) => {
   const [lang, setLang] = useState(languages[0].lang);
   const themeMode = useAppSelector(selectThemeMode);
   const dispatch = useAppDispatch();
   const {t, i18n} = useTranslation();
+  const { title } = usePageTitle();
 
   const handleDrawerOpen = () => {
     onDrawerOpen(true);
   };
-  const onLangChange = (e: any) => {
-    const selectedLang = e.target.value;
-    console.log(selectedLang)
-    debugger
+  const onLangChange = (e: SelectChangeEvent) => {
+    const selectedLang = e.target.value as string;
     setLang(selectedLang);
     i18n.changeLanguage(selectedLang);
   };
@@ -76,11 +81,13 @@ const Topbar = ({open, onDrawerOpen}: any) => {
           <MenuIcon/>
         </IconButton>
         <Typography variant="h6" noWrap component="div">
-          <Trans i18nKey="app.title">React + Redux-Toolkit + MUI + Typescript Boilerplate</Trans>
+          {title ?? (
+            <Trans i18nKey="app.title">React + Redux-Toolkit + MUI + Typescript Boilerplate</Trans>
+          )}
         </Typography>
 
         <Select onChange={onLangChange} defaultValue={lang} style={{marginLeft: 'auto'}}>
-          {languages.map((lan:any) => (
+          {languages.map((lan) => (
             <MenuItem
               key={lan.lang}
               value={lan.lang}

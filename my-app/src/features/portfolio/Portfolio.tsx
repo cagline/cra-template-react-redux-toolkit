@@ -74,9 +74,11 @@ import { calculateRealizedGainLoss, verifySellOrders } from './utils/lotTracker'
 import { exportToCSV, exportToMarkdown, exportToPDF } from './utils/exportUtils';
 import { generateAllRecommendations } from './utils/recommendationEngine';
 import { exportAIMetadata, exportAIMarkdown, exportAIMetadataForActionRanges } from './utils/aiMetadataExport';
-import type { Lot, StockSplit, SecurityHolding } from './types';
+import type { StockSplit, SecurityHolding } from './types';
+import { usePageTitle } from '../../layouts/usePageTitle';
 
 const Portfolio: React.FC = () => {
+  const { setTitle } = usePageTitle();
   const dispatch = useAppDispatch();
   const orders = useAppSelector(selectOrders);
   const lots = useAppSelector(selectLots);
@@ -252,6 +254,11 @@ const Portfolio: React.FC = () => {
     }
   }, [stockSplits]);
 
+  useEffect(() => {
+    setTitle('Stock Portfolio Analysis');
+    return () => setTitle(null);
+  }, [setTitle]);
+
   const realizedGainLoss = calculateRealizedGainLoss(lots, portfolioData);
   const verification = verifySellOrders(lots, orders);
   const holdingsArray = Object.values(holdings).sort((a, b) =>
@@ -263,29 +270,10 @@ const Portfolio: React.FC = () => {
     (sum, holding) => sum + (holding.unrealizedGainLoss || 0),
     0
   );
-  const totalUnrealizedGainLossPercent = holdingsArray.reduce((sum, holding) => {
-    if (holding.totalCost > 0 && holding.unrealizedGainLoss !== undefined) {
-      return sum + (holding.unrealizedGainLoss / holding.totalCost) * 100 * (holding.totalCost / holdingsArray.reduce((s, h) => s + h.totalCost, 0));
-    }
-    return sum;
-  }, 0);
   const totalPortfolioValue = holdingsArray.reduce((sum, h) => sum + (h.marketValue || 0), 0);
 
   return (
     <Container maxWidth={false} sx={{ py: 4, px: { xs: 2, sm: 3, md: 4 }, maxWidth: '1920px', width: '100%' }}>
-      <Typography variant="h4" gutterBottom>
-        Stock Portfolio Analysis
-      </Typography>
-      <Typography variant="body2" color="text.secondary" paragraph>
-        Upload your Order Tracker CSV from ATrad to analyze gain/loss per individual lot
-      </Typography>
-      <Alert severity="info" sx={{ mb: 3 }}>
-        <Typography variant="body2">
-          <strong>Stock Splits:</strong> You can manually add stock splits below. The system will
-          automatically adjust quantities and prices for all orders before the split date.
-        </Typography>
-      </Alert>
-
       {/* CSV Upload Section */}
       <Card sx={{ mb: 4 }}>
         <CardContent>
@@ -379,7 +367,7 @@ const Portfolio: React.FC = () => {
                       Uploading...
                     </Box>
                   ) : (
-                    'Upload Portfolio CSV (Commission Data)'
+                    'Upload Portfolio CSV'
                   )}
                 </Button>
               </label>
@@ -472,8 +460,17 @@ const Portfolio: React.FC = () => {
 
           {orders.length === 0 && !error && (
             <Alert severity="info" sx={{ mt: 2 }}>
-              Please upload your Order Tracker CSV file to begin analysis. The file should be
-              exported from ATrad broker platform.
+              <Typography variant="body2" component="div">
+                <div>
+                  Upload your Order Tracker CSV from ATrad to analyze gain/loss per individual lot.
+                </div>
+                <div>
+                  Upload your Portfolio Watchlist (latest prices) CSV to analyze unrealized gain/loss.
+                </div>
+                <div>
+                  Upload your Portfolio CSV (commission data) to analyze realized gain/loss.
+                </div>
+              </Typography>
             </Alert>
           )}
         </CardContent>
@@ -483,7 +480,7 @@ const Portfolio: React.FC = () => {
         <>
           {/* Summary Cards */}
           <Grid container spacing={3} sx={{ mb: 4 }}>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Card>
                 <CardContent>
                   <Typography color="text.secondary" gutterBottom>
@@ -493,7 +490,7 @@ const Portfolio: React.FC = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Card>
                 <CardContent>
                   <Typography color="text.secondary" gutterBottom>
@@ -503,7 +500,7 @@ const Portfolio: React.FC = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Card>
                 <CardContent>
                   <Typography color="text.secondary" gutterBottom>
@@ -535,7 +532,7 @@ const Portfolio: React.FC = () => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Card>
                 <CardContent>
                   <Typography color="text.secondary" gutterBottom>
@@ -582,7 +579,7 @@ const Portfolio: React.FC = () => {
                   Verification & Debug Info
                 </Typography>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <Typography variant="body2" color="text.secondary">
                       Total SELL Orders: {verification.allSellOrders.length}
                     </Typography>
@@ -593,7 +590,7 @@ const Portfolio: React.FC = () => {
                       Unmatched: {verification.unmatchedSells.length}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} md={6}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <Typography variant="body2" color="text.secondary">
                       Total Sell Proceeds: {verification.totalSellProceeds.toLocaleString('en-US', {
                         minimumFractionDigits: 2,
@@ -869,7 +866,6 @@ const Portfolio: React.FC = () => {
 
           {/* Lot-wise Analysis */}
           <LotWiseAnalysis 
-            lots={lots} 
             holdings={holdings} 
             stockSplits={stockSplits}
             searchQuery={searchQuery}
@@ -996,7 +992,6 @@ const Portfolio: React.FC = () => {
 
 // Lot-wise Analysis Component
 const LotWiseAnalysis: React.FC<{
-  lots: Lot[];
   holdings: Record<string, SecurityHolding>;
   stockSplits: StockSplit[];
   searchQuery: string;
@@ -1010,7 +1005,6 @@ const LotWiseAnalysis: React.FC<{
   onAddSplit: (security: string) => void;
   onRemoveSplit: (splitId: string) => void;
 }> = ({ 
-  lots, 
   holdings, 
   stockSplits, 
   searchQuery,
@@ -1039,14 +1033,22 @@ const LotWiseAnalysis: React.FC<{
             <Typography variant="h6" gutterBottom>
               Lot-wise Gain/Loss Analysis
             </Typography>
+            <Alert severity="info" sx={{ mb: 1 }}>
             <Typography variant="body2" color="text.secondary">
               Each BUY order is tracked as a separate lot. SELL orders are matched using FIFO method.
             </Typography>
+            </Alert>
+            <Alert severity="info" sx={{ mb: 1 }}>
+              <Typography variant="body2">
+                <strong>Stock Splits:</strong> You can manually add stock splits below. The system will
+                automatically adjust quantities and prices for all orders before the split date.
+              </Typography>
+            </Alert>
           </Box>
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-end', flex: 1 }}>
             <TextField
               size="small"
-              placeholder="Search securities..."
+              placeholder="Search securities...!"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               InputProps={{

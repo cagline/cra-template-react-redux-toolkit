@@ -3,6 +3,7 @@ import SideNav from "../components/SideNav/SideNav";
 import TopBar from "../components/Topbar/Topbar";
 import { Suspense, useState } from "react";
 import { Box, styled } from "@mui/material";
+import { PageTitleProvider } from "./PageTitleProvider";
 
 const drawerWidth = 240;
 
@@ -42,15 +43,17 @@ const DashboardLayout = () => {
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <TopBar open={open} onDrawerOpen={handleDrawerOpen} />
-      <SideNav open={open} onDrawerOpen={handleDrawerOpen} onDrawerClose={handleDrawerClose} />
-      <PageContainer open={open} id="page-content-wrapper">
-        <Suspense fallback={<div>Loading...</div>}>
-          <Outlet />
-        </Suspense>
-      </PageContainer>
-    </Box>
+    <PageTitleProvider>
+      <Box sx={{ width: "100%" }}>
+        <TopBar open={open} onDrawerOpen={handleDrawerOpen} />
+        <SideNav open={open} onDrawerOpen={handleDrawerOpen} onDrawerClose={handleDrawerClose} />
+        <PageContainer open={open} id="page-content-wrapper">
+          <Suspense fallback={<div>Loading...</div>}>
+            <Outlet />
+          </Suspense>
+        </PageContainer>
+      </Box>
+    </PageTitleProvider>
   );
 };
 
