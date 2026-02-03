@@ -9,6 +9,7 @@
 | Document | Description |
 |----------|-------------|
 | [PROJECT-STRUCTURE.md](./PROJECT-STRUCTURE.md) | App-shell directory tree and folder roles (api, shared, config, features, layouts, remotes, store, utils) |
+| [IMPLEMENTATION-GUIDE.md](./IMPLEMENTATION-GUIDE.md) | How to build a similar app: main structure, feature layout, API slices (shared vs feature), store, routes |
 | [GETTING-STARTED.md](./GETTING-STARTED.md) | Prerequisites, install, run shell + remotes, stub mode, scripts, troubleshooting |
 | [ENVIRONMENT.md](./ENVIRONMENT.md) | Environment configuration (`env-config.js`), variables, deployment |
 | [REMOTE-MODULE-CONTRACT.md](./REMOTE-MODULE-CONTRACT.md) | Shell–remote contract (ShellProps), adding a new remote, stubs vs real remotes |

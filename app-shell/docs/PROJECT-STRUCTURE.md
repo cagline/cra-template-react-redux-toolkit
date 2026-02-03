@@ -41,3 +41,8 @@ app-shell/
 | **src/utils/** | i18n, logger, input helpers |
 
 Entry points: **src/index.tsx** (bootstrap), **src/App.tsx** (root component), **src/routes.tsx** (routing).
+
+## API slice placement
+
+- **src/api/** — Shared layer only: base query, interceptors (e.g. `interceptorsSlice.ts`). No feature-specific `createApi` here.
+- **Feature API slices** — Live in the feature: `src/features/[FeatureName]/[featureName]ApiSlice.ts`. See [IMPLEMENTATION-GUIDE.md](./IMPLEMENTATION-GUIDE.md).

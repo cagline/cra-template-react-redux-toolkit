@@ -55,6 +55,10 @@ TermsAndConditions/
 - **No `components/`** — Page, Search, Grid, Drawer are siblings; names make their role clear.
 - **Tests** — One or a few test files at feature root (e.g. `TermsAndConditions.test.tsx` or `TermsAndConditionsPage.test.tsx`). No `__tests__/` unless the feature is complex.
 
+### Feature API slices (RTK Query)
+
+For features that need server data, add **`[featureName]ApiSlice.ts`** in the feature folder (e.g. `todoApiSlice.ts`). Use `createApi` with `baseQuery` from `src/api/interceptorsSlice`. Export the slice from the feature `index.ts`; the store imports it from the feature (e.g. `from '../features/todo'`). See [IMPLEMENTATION-GUIDE.md](./IMPLEMENTATION-GUIDE.md).
+
 ### Sub-feature (same idea, flat)
 
 ```
