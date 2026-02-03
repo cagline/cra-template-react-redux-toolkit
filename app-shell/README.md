@@ -31,6 +31,7 @@ Full documentation is in the **[docs](docs/)** folder:
 - [Environment](docs/ENVIRONMENT.md) — `env-config.js` and variables  
 - [Remote module contract](docs/REMOTE-MODULE-CONTRACT.md) — ShellProps, adding remotes  
 - [Localization](docs/LOCALIZATION.md) — i18n and shared language with remotes  
+- [Feature structure](docs/FEATURE-STRUCTURE.md) — Feature folder organization (flat vs subfolders)  
 - [Micro UI architecture](docs/MICRO_UI_ARCHITECTURE.md) — Architecture and design  
 
 ## Tech stack

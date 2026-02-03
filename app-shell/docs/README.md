@@ -10,6 +10,7 @@ Documentation for the shell application (host) and how it integrates with remote
 | [ENVIRONMENT.md](./ENVIRONMENT.md) | Environment configuration (`env-config.js`), variables, and deployment |
 | [REMOTE-MODULE-CONTRACT.md](./REMOTE-MODULE-CONTRACT.md) | Shell–remote contract (ShellProps), adding a new remote, stubs vs real remotes |
 | [LOCALIZATION.md](./LOCALIZATION.md) | i18n setup, adding translations, and how remotes share the shell's language |
+| [FEATURE-STRUCTURE.md](./FEATURE-STRUCTURE.md) | Feature folder organization: flat by default, conditional subfolders, naming |
 | [MICRO_UI_ARCHITECTURE.md](./MICRO_UI_ARCHITECTURE.md) | Micro UI architecture decisions and design |
 | [MICRO_UI_POC_README.md](./MICRO_UI_POC_README.md) | POC implementation summary and what's built |
 
