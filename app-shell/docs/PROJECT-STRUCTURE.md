@@ -1,0 +1,43 @@
+# Project structure
+
+High-level layout of the app-shell codebase.
+
+## Directory tree
+
+```
+app-shell/
+├── docs/                 # Documentation (getting started, env, remotes, i18n, feature structure)
+├── public/               # Static assets, env-config.js, locales (i18n)
+├── src/
+│   ├── api/              # API slices (e.g. interceptors)
+│   ├── shared/           # Shared shell UI (Topbar, SideNav, ErrorBoundary)
+│   ├── config/           # App config (dev/prod)
+│   ├── features/         # Feature modules (counter, dashboard, todo, etc.)
+│   ├── layouts/          # DashboardLayout, UnauthorizedLayout
+│   ├── remotes/          # Remote loaders, stubs, ShellProps types
+│   ├── store/            # Redux store
+│   ├── utils/            # i18n, logger, helpers
+│   ├── App.tsx
+│   ├── index.tsx
+│   └── routes.tsx
+├── index.html
+├── vite.config.ts
+└── package.json
+```
+
+## Folder roles
+
+| Path | Purpose |
+|------|---------|
+| **docs/** | All development documentation (see [README](./README.md)) |
+| **public/** | Static assets, runtime env (`env-config.js`), i18n locale files |
+| **src/api/** | API layer (base query, interceptors, shared RTK Query setup) |
+| **src/shared/** | Reusable shell UI: Topbar, SideNav, ErrorBoundary |
+| **src/config/** | App configuration (dev/prod, base URLs) |
+| **src/features/** | Feature modules (counter, dashboard, todo, home, help, error). See [FEATURE-STRUCTURE.md](./FEATURE-STRUCTURE.md) |
+| **src/layouts/** | Layout components: DashboardLayout, UnauthorizedLayout |
+| **src/remotes/** | Module Federation: remote loaders, stubs, ShellProps types |
+| **src/store/** | Redux store and hooks |
+| **src/utils/** | i18n, logger, input helpers |
+
+Entry points: **src/index.tsx** (bootstrap), **src/App.tsx** (root component), **src/routes.tsx** (routing).

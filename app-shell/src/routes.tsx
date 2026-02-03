@@ -5,12 +5,24 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import UnauthorizedLayout from "./layouts/UnauthorizedLayout";
 import { RemoteModuleA, RemoteModuleB } from "./remotes";
 
-const Error = lazy(() => import("./features/error/Error"));
-const Home = lazy(() => import("./features/home/Home"));
-const About = lazy(() => import("./features/help/Help"));
-const Todo = lazy(() => import("./features/todo/Todo"));
-const Counter = lazy(() => import("./features/counter/Counter"));
-const Dashboard = lazy(() => import("./features/dashboard/Dashboard"));
+const ErrorPage = lazy(() =>
+  import("./features/error").then((m) => ({ default: m.ErrorPage }))
+);
+const HomePage = lazy(() =>
+  import("./features/home").then((m) => ({ default: m.HomePage }))
+);
+const HelpPage = lazy(() =>
+  import("./features/help").then((m) => ({ default: m.HelpPage }))
+);
+const TodoPage = lazy(() =>
+  import("./features/todo").then((m) => ({ default: m.TodoPage }))
+);
+const CounterPage = lazy(() =>
+  import("./features/counter").then((m) => ({ default: m.CounterPage }))
+);
+const DashboardPage = lazy(() =>
+  import("./features/dashboard").then((m) => ({ default: m.DashboardPage }))
+);
 
 // Loading fallback for Suspense
 const LoadingFallback = () => (
@@ -24,10 +36,10 @@ export default function AppRoutes() {
     {
       element: <DashboardLayout />,
       children: [
-        { path: "/", element: <Dashboard /> },
-        { path: "counter", element: <Counter /> },
-        { path: "todo", element: <Todo /> },
-        { path: "error", element: <Error /> },
+        { path: "/", element: <DashboardPage /> },
+        { path: "counter", element: <CounterPage /> },
+        { path: "todo", element: <TodoPage /> },
+        { path: "error", element: <ErrorPage /> },
         // Micro Frontend Routes
         // These routes mount remote modules that handle their own internal routing
         { 
@@ -51,8 +63,8 @@ export default function AppRoutes() {
     {
       element: <UnauthorizedLayout />,
       children: [
-        { path: "home", element: <Home /> },
-        { path: "about", element: <About /> },
+        { path: "home", element: <HomePage /> },
+        { path: "about", element: <HelpPage /> },
       ],
     },
   ]);
