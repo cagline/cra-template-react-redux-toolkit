@@ -148,11 +148,23 @@ Then use **`features/[FeatureName]/`** directly (e.g. `features/TermsAndConditio
 
 Use the same pattern for sub-features (e.g. `VersionHistoryPage.tsx`, `useVersionHistoryController.ts`).
 
+### Controller hook: optional by default for small features
+
+For **very small, single-use features** (e.g. one selector, one dispatch, one local state, used only in one Page), **don't use a controller hook by default** — it's optional. Keep `useAppSelector`, `useAppDispatch`, and local state in the Page. Add a controller hook later if the feature grows or is reused.
+
+**Generic rule by size (number of lines):**
+
+- **Controller hook optional:** If the logic (selectors, dispatch, local state, handlers) fits in **roughly under ~20 lines** in one place and is used only in one Page, keep it in the Page — don't add a controller hook.
+- **Use a controller hook:** If the function or logic block **exceeds ~20–25 lines**, or has multiple concerns (RTK Query hooks, `useEffect`, several handlers), use a controller hook and keep the Page presentational.
+
+Use the same approach for methods: if a single method or handler grows beyond a small block (~10–15 lines), consider extracting or using a controller hook to keep the Page readable.
+
 ---
 
 ## Summary
 
 - **Default:** Simple, flat feature root; `[FeatureName]Page.tsx`, `[FeatureName]Search.tsx`, etc. at root; no `components/` folder.
+- **Controller hook:** Optional by default for very small, single-use features (don't use — keep logic in the Page); add one when the feature grows or is reused.
 - **When to add subfolders:** Only when at least two of: many hooks, multiple domains, complex UI, larger team, many tests.
 - **Module folder:** Only when you have a real product/module grouping; otherwise `features/[FeatureName]/` is enough.
 - **Sub-features and tests:** Same flat-first approach; use `__tests__/` (and hooks/utils subfolders) only in the complex case.

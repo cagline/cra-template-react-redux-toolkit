@@ -27,11 +27,13 @@ Follow [FEATURE-STRUCTURE.md](./FEATURE-STRUCTURE.md): flat by default, name by 
 src/features/counter/
 ├── index.ts                    # Public exports
 ├── CounterPage.tsx             # Main screen
-├── useCounterController.ts     # Business logic (Redux selectors/dispatch)
+├── useCounterController.ts     # Business logic (Redux selectors/dispatch) — optional for very small features
 ├── counterSlice.ts             # Redux slice (optional)
 ├── counterAPI.ts               # Plain async helper (optional)
 └── CounterPage.module.css      # Styles (optional)
 ```
+
+For very small, single-use features, the controller hook is optional; Redux selectors, dispatch, and local state can live directly in the Page. See [FEATURE-STRUCTURE.md](./FEATURE-STRUCTURE.md#controller-hook-optional-by-default-for-small-features): if the logic fits in roughly under ~20 lines and is used in one place, keep it in the Page; if it exceeds ~20–25 lines or has multiple concerns, use a controller hook.
 
 **Feature with server API (e.g. todo):**
 
@@ -46,6 +48,7 @@ src/features/todo/
 
 - **API slice lives in the feature** — `todoApiSlice.ts` is under `src/features/todo/`, not under `src/api/`.
 - **Feature index** re-exports: the Page component, the controller hook, and the API slice (so the store can import from the feature).
+- **Controller hook:** Use when the logic exceeds roughly ~20–25 lines or has multiple concerns (RTK Query, `useEffect`, several handlers); see [FEATURE-STRUCTURE.md](./FEATURE-STRUCTURE.md#controller-hook-optional-by-default-for-small-features).
 
 ---
 
@@ -164,6 +167,8 @@ const CounterPage = lazy(() =>
   - No direct use of `useAppDispatch` or RTK Query hooks in the Page; keep that in the controller.
 
 This keeps the Page presentational and makes the feature easy to test and reuse.
+
+**Controller hook optional by default:** For minimal, single-use features (e.g. a simple counter in one page), don't use a controller hook — keep selectors, dispatch, and local state in the Page. Add one when the feature grows or is reused. Use the generic rule by size: under ~20 lines in one place → optional; over ~20–25 lines or multiple concerns → use a controller hook. See [FEATURE-STRUCTURE.md](./FEATURE-STRUCTURE.md#controller-hook-optional-by-default-for-small-features).
 
 ---
 
