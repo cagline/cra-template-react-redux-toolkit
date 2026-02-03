@@ -1,73 +1,38 @@
-# React + TypeScript + Vite
+# App Shell
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Host application for the micro frontend setup. Provides the layout, routing, theme, and shared i18n; remote modules (Module A, Module B) load at runtime via Module Federation.
 
-Currently, two official plugins are available:
+## Quick start
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# From app-shell directory
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open **http://localhost:3000**. For full integration with remotes, run Module A (port 3001) and Module B (port 3002) as well — see [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Scripts
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Script         | Description              |
+|----------------|--------------------------|
+| `npm run dev`  | Start dev server (3000)  |
+| `npm run build`| TypeScript + Vite build  |
+| `npm run preview` | Serve production build |
+| `npm run lint` | ESLint                   |
+| `npm run test` | Vitest                   |
+
+## Documentation
+
+Full documentation is in the **[docs](docs/)** folder:
+
+- [docs/README.md](docs/README.md) — Index of all docs  
+- [Getting started](docs/GETTING-STARTED.md) — Install, run shell + remotes, stub mode  
+- [Environment](docs/ENVIRONMENT.md) — `env-config.js` and variables  
+- [Remote module contract](docs/REMOTE-MODULE-CONTRACT.md) — ShellProps, adding remotes  
+- [Localization](docs/LOCALIZATION.md) — i18n and shared language with remotes  
+- [Micro UI architecture](docs/MICRO_UI_ARCHITECTURE.md) — Architecture and design  
+
+## Tech stack
+
+React 19, TypeScript, Vite, React Router 7, MUI, Redux Toolkit, i18next. Module Federation via `@originjs/vite-plugin-federation`.
