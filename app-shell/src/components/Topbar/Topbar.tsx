@@ -4,7 +4,7 @@ import type { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Select from '@mui/material/Select';
 
 
-import React, { useState } from "react";
+import React from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { changeThemeMode, selectThemeMode } from "../../appSlice";
@@ -42,19 +42,16 @@ const languages = [
 ];
 
 const Topbar = ({open, onDrawerOpen}: any) => {
-  const [lang, setLang] = useState(languages[0].lang);
   const themeMode = useAppSelector(selectThemeMode);
   const dispatch = useAppDispatch();
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language || languages[0].lang;
 
   const handleDrawerOpen = () => {
     onDrawerOpen(true);
   };
   const onLangChange = (e: any) => {
     const selectedLang = e.target.value;
-    console.log(selectedLang)
-    debugger
-    setLang(selectedLang);
     i18n.changeLanguage(selectedLang);
   };
 
@@ -79,7 +76,7 @@ const Topbar = ({open, onDrawerOpen}: any) => {
           <Trans i18nKey="app.title">React + Redux-Toolkit + MUI + Typescript Boilerplate</Trans>
         </Typography>
 
-        <Select onChange={onLangChange} defaultValue={lang} style={{marginLeft: 'auto'}}>
+        <Select onChange={onLangChange} value={lang} style={{marginLeft: 'auto'}}>
           {languages.map((lan:any) => (
             <MenuItem
               key={lan.lang}

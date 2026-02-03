@@ -32,6 +32,7 @@ import {
   ShowChart,
 } from '@mui/icons-material';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { ShellProps } from './types';
 
 /**
@@ -52,6 +53,7 @@ const ModuleBHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
   user,
   navigate,
 }) => {
+  const { t } = useTranslation();
   const [reports] = useState([
     { id: 1, name: 'Q4 Sales Report', status: 'completed', progress: 100, date: '2026-01-15', type: 'sales' },
     { id: 2, name: 'User Analytics', status: 'in_progress', progress: 65, date: '2026-01-20', type: 'analytics' },
@@ -61,21 +63,21 @@ const ModuleBHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
   ]);
 
   const metrics = [
-    { label: 'Total Users', value: '12,847', change: '+15%', trend: 'up', color: 'success' },
-    { label: 'Active Sessions', value: '3,291', change: '+8%', trend: 'up', color: 'success' },
-    { label: 'Avg. Response Time', value: '142ms', change: '-12%', trend: 'down', color: 'success' },
-    { label: 'Error Rate', value: '0.3%', change: '+0.1%', trend: 'up', color: 'warning' },
+    { labelKey: 'moduleB.totalUsers' as const, value: '12,847', change: '+15%', trend: 'up' as const, color: 'success' as const },
+    { labelKey: 'moduleB.activeSessions' as const, value: '3,291', change: '+8%', trend: 'up' as const, color: 'success' as const },
+    { labelKey: 'moduleB.avgResponseTime' as const, value: '142ms', change: '-12%', trend: 'down' as const, color: 'success' as const },
+    { labelKey: 'moduleB.errorRate' as const, value: '0.3%', change: '+0.1%', trend: 'up' as const, color: 'warning' as const },
   ];
 
   return (
     <Box sx={{ p: 3 }}>
       <Alert severity="success" sx={{ mb: 3 }}>
-        <strong>Remote Module B Loaded!</strong> This is a real federated module running on port 3002.
+        <strong>{t('moduleB.loaded')}</strong> {t('moduleB.loadedSub')}
       </Alert>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" component="h1">
-          Module B - Reporting & Analytics
+          {t('moduleB.title')}
         </Typography>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
           <Button
@@ -83,11 +85,11 @@ const ModuleBHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
             startIcon={<PieChart />}
             onClick={() => navigate('/module-b/dashboard')}
           >
-            Dashboard
+            {t('moduleB.dashboard')}
           </Button>
           <Chip
             icon={<PersonOutline />}
-            label={`${user?.name || 'Unknown'}`}
+            label={user?.name || t('moduleB.unknown')}
             variant="outlined"
           />
         </Box>
@@ -100,14 +102,14 @@ const ModuleBHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
             <Card sx={{ '&:hover': { boxShadow: 4 } }}>
               <CardContent>
                 <Typography color="text.secondary" gutterBottom variant="body2">
-                  {metric.label}
+                  {t(metric.labelKey)}
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Typography variant="h4" fontWeight="bold">{metric.value}</Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 1 }}>
                   {metric.trend === 'up' ? (
-                    <TrendingUp color={metric.color as 'success' | 'warning'} fontSize="small" />
+                    <TrendingUp color={metric.color} fontSize="small" />
                   ) : (
                     <TrendingDown color="success" fontSize="small" />
                   )}
@@ -115,7 +117,7 @@ const ModuleBHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
                     variant="body2"
                     color={metric.color === 'success' ? 'success.main' : 'warning.main'}
                   >
-                    {metric.change} from last month
+                    {metric.change} {t('moduleB.fromLastMonth')}
                   </Typography>
                 </Box>
               </CardContent>
@@ -128,14 +130,14 @@ const ModuleBHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
       <Paper sx={{ p: 2, mb: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
           <Typography variant="h6">
-            Recent Reports
+            {t('moduleB.recentReports')}
           </Typography>
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button variant="outlined" size="small" startIcon={<DateRange />}>
-              Filter
+              {t('moduleB.filter')}
             </Button>
             <Button variant="contained" size="small" startIcon={<Assessment />}>
-              New Report
+              {t('moduleB.newReport')}
             </Button>
           </Box>
         </Box>
@@ -144,12 +146,12 @@ const ModuleBHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Report Name</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Progress</TableCell>
-                <TableCell>Date</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableCell>{t('moduleB.reportName')}</TableCell>
+                <TableCell>{t('moduleB.type')}</TableCell>
+                <TableCell>{t('moduleB.status')}</TableCell>
+                <TableCell>{t('moduleB.progress')}</TableCell>
+                <TableCell>{t('moduleB.date')}</TableCell>
+                <TableCell align="right">{t('moduleB.actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -203,7 +205,7 @@ const ModuleBHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
                         alert('Download started!');
                       }}
                     >
-                      Export
+                      {t('moduleB.export')}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -217,6 +219,7 @@ const ModuleBHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
 };
 
 const ModuleBReport: React.FC = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const id = location.pathname.split('/').pop();
   const [tabValue, setTabValue] = useState(0);
@@ -224,25 +227,25 @@ const ModuleBReport: React.FC = () => {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
-        Report Details - #{id}
+        {t('moduleB.reportDetails', { id })}
       </Typography>
       
       <Alert severity="info" sx={{ mb: 3 }}>
-        This is the detail view for report {id} from Remote Module B.
+        {t('moduleB.detailAlert', { id })}
       </Alert>
 
       <Paper sx={{ mb: 3 }}>
         <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)}>
-          <Tab icon={<BarChart />} label="Overview" />
-          <Tab icon={<ShowChart />} label="Trends" />
-          <Tab icon={<PieChart />} label="Distribution" />
+          <Tab icon={<BarChart />} label={t('moduleB.overview')} />
+          <Tab icon={<ShowChart />} label={t('moduleB.trends')} />
+          <Tab icon={<PieChart />} label={t('moduleB.distribution')} />
         </Tabs>
       </Paper>
 
       <Paper sx={{ p: 3 }}>
         {tabValue === 0 && (
           <Box>
-            <Typography variant="h6" gutterBottom>Overview</Typography>
+            <Typography variant="h6" gutterBottom>{t('moduleB.overview')}</Typography>
             <Box 
               sx={{ 
                 height: 300, 
@@ -255,13 +258,13 @@ const ModuleBReport: React.FC = () => {
               }}
             >
               <BarChart sx={{ fontSize: 64, opacity: 0.5, mr: 2 }} />
-              <Typography>Bar Chart Visualization</Typography>
+              <Typography>{t('moduleB.barChart')}</Typography>
             </Box>
           </Box>
         )}
         {tabValue === 1 && (
           <Box>
-            <Typography variant="h6" gutterBottom>Trends</Typography>
+            <Typography variant="h6" gutterBottom>{t('moduleB.trends')}</Typography>
             <Box 
               sx={{ 
                 height: 300, 
@@ -274,13 +277,13 @@ const ModuleBReport: React.FC = () => {
               }}
             >
               <ShowChart sx={{ fontSize: 64, opacity: 0.5, mr: 2 }} />
-              <Typography>Line Chart Visualization</Typography>
+              <Typography>{t('moduleB.lineChart')}</Typography>
             </Box>
           </Box>
         )}
         {tabValue === 2 && (
           <Box>
-            <Typography variant="h6" gutterBottom>Distribution</Typography>
+            <Typography variant="h6" gutterBottom>{t('moduleB.distribution')}</Typography>
             <Box 
               sx={{ 
                 height: 300, 
@@ -293,7 +296,7 @@ const ModuleBReport: React.FC = () => {
               }}
             >
               <PieChart sx={{ fontSize: 64, opacity: 0.5, mr: 2 }} />
-              <Typography>Pie Chart Visualization</Typography>
+              <Typography>{t('moduleB.pieChart')}</Typography>
             </Box>
           </Box>
         )}
@@ -303,16 +306,20 @@ const ModuleBReport: React.FC = () => {
 };
 
 const ModuleBDashboard: React.FC = () => {
+  const { t } = useTranslation();
+  const kpiKeys = ['moduleB.conversionRate', 'moduleB.bounceRate', 'moduleB.avgSessionDuration', 'moduleB.pagesPerSession'] as const;
+  const kpiValues = ['3.2%', '42%', '4:32', '5.8'];
+
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
-        Analytics Dashboard
+        {t('moduleB.analyticsDashboard')}
       </Typography>
       
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 8 }}>
           <Paper sx={{ p: 3, height: 400 }}>
-            <Typography variant="h6" gutterBottom>Revenue Over Time</Typography>
+            <Typography variant="h6" gutterBottom>{t('moduleB.revenueOverTime')}</Typography>
             <Box 
               sx={{ 
                 height: 320, 
@@ -325,14 +332,14 @@ const ModuleBDashboard: React.FC = () => {
             >
               <ShowChart sx={{ fontSize: 64, color: 'grey.400', mr: 2 }} />
               <Typography color="text.secondary">
-                Integrate with Chart.js or Recharts
+                {t('moduleB.integrateCharts')}
               </Typography>
             </Box>
           </Paper>
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
           <Paper sx={{ p: 3, height: 400 }}>
-            <Typography variant="h6" gutterBottom>Traffic Sources</Typography>
+            <Typography variant="h6" gutterBottom>{t('moduleB.trafficSources')}</Typography>
             <Box 
               sx={{ 
                 height: 320, 
@@ -349,15 +356,15 @@ const ModuleBDashboard: React.FC = () => {
         </Grid>
         <Grid size={{ xs: 12 }}>
           <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>Key Performance Indicators</Typography>
+            <Typography variant="h6" gutterBottom>{t('moduleB.kpis')}</Typography>
             <Grid container spacing={2}>
-              {['Conversion Rate', 'Bounce Rate', 'Avg. Session Duration', 'Pages per Session'].map((kpi, i) => (
+              {kpiKeys.map((kpiKey, i) => (
                 <Grid size={{ xs: 12, sm: 6, md: 3 }} key={i}>
                   <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
                     <Typography variant="h4" color="primary.main">
-                      {['3.2%', '42%', '4:32', '5.8'][i]}
+                      {kpiValues[i]}
                     </Typography>
-                    <Typography color="text.secondary">{kpi}</Typography>
+                    <Typography color="text.secondary">{t(kpiKey)}</Typography>
                   </Box>
                 </Grid>
               ))}

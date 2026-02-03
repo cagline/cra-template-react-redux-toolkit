@@ -24,6 +24,7 @@ import {
   PersonOutline,
 } from '@mui/icons-material';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { ShellProps } from './types';
 
 /**
@@ -44,6 +45,7 @@ const ModuleAHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
   user,
   navigate,
 }) => {
+  const { t } = useTranslation();
   const [items] = useState([
     { id: 1, name: 'Engineering Team', status: 'active', members: 12 },
     { id: 2, name: 'Design Team', status: 'active', members: 5 },
@@ -54,23 +56,23 @@ const ModuleAHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
   return (
     <Box sx={{ p: 3 }}>
       <Alert severity="success" sx={{ mb: 3 }}>
-        <strong>Remote Module A Loaded!</strong> This is a real federated module running on port 3001.
+        <strong>{t('moduleA.loaded')}</strong> {t('moduleA.loadedSub')}
       </Alert>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" component="h1">
-          Module A - Team Management
+          {t('moduleA.title')}
         </Typography>
         <Chip
           icon={<PersonOutline />}
-          label={`Logged in as: ${user?.name || 'Unknown'}`}
+          label={t('moduleA.loggedInAs', { name: user?.name || t('moduleA.unknown') })}
           variant="outlined"
         />
       </Box>
 
       <Paper sx={{ p: 2, mb: 3 }}>
         <Typography variant="h6" gutterBottom>
-          Teams Overview
+          {t('moduleA.teamsOverview')}
         </Typography>
         <Divider sx={{ mb: 2 }} />
         <Grid container spacing={2}>
@@ -90,7 +92,7 @@ const ModuleAHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
                     />
                   </Box>
                   <Typography color="text.secondary">
-                    {item.members} members
+                    {t('moduleA.members', { count: item.members })}
                   </Typography>
                 </CardContent>
               </Card>
@@ -101,14 +103,14 @@ const ModuleAHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
 
       <Box sx={{ display: 'flex', gap: 2 }}>
         <Button variant="contained" startIcon={<Add />}>
-          Create Team
+          {t('moduleA.createTeam')}
         </Button>
         <Button
           variant="outlined"
           startIcon={<Settings />}
           onClick={() => navigate('/module-a/settings')}
         >
-          Settings
+          {t('moduleA.settings')}
         </Button>
       </Box>
     </Box>
@@ -116,32 +118,33 @@ const ModuleAHome: React.FC<{ user: ShellProps['user']; navigate: ShellProps['na
 };
 
 const ModuleADetails: React.FC = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const id = location.pathname.split('/').pop();
 
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
-        Team Details - ID: {id}
+        {t('moduleA.teamDetails', { id })}
       </Typography>
       <Paper sx={{ p: 3 }}>
         <Alert severity="info" sx={{ mb: 2 }}>
-          This is the detail view for team {id} from Remote Module A.
+          {t('moduleA.detailAlert', { id })}
         </Alert>
         <List>
           <ListItem>
             <ListItemIcon>
               <CheckCircleOutline color="success" />
             </ListItemIcon>
-            <ListItemText primary="Team Status" secondary="Active" />
+            <ListItemText primary={t('moduleA.teamStatus')} secondary={t('moduleA.active')} />
           </ListItem>
           <ListItem>
             <ListItemIcon>
               <Info color="primary" />
             </ListItemIcon>
             <ListItemText
-              primary="Description"
-              secondary="This team is responsible for building amazing software."
+              primary={t('moduleA.description')}
+              secondary={t('moduleA.teamDescription')}
             />
           </ListItem>
         </List>
@@ -151,29 +154,30 @@ const ModuleADetails: React.FC = () => {
 };
 
 const ModuleASettings: React.FC = () => {
+  const { t } = useTranslation();
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
-        Module A Settings
+        {t('moduleA.moduleSettings')}
       </Typography>
       <Paper sx={{ p: 3 }}>
         <Typography variant="body1" paragraph>
-          Configure Module A settings here.
+          {t('moduleA.configureSettings')}
         </Typography>
         <TextField
-          label="Team Name Prefix"
-          defaultValue="Team"
+          label={t('moduleA.teamNamePrefix')}
+          defaultValue={t('moduleA.teamNamePrefixDefault')}
           fullWidth
           sx={{ mb: 2 }}
         />
         <TextField
-          label="Max Team Size"
+          label={t('moduleA.maxTeamSize')}
           type="number"
           defaultValue={20}
           fullWidth
           sx={{ mb: 2 }}
         />
-        <Button variant="contained">Save Settings</Button>
+        <Button variant="contained">{t('moduleA.saveSettings')}</Button>
       </Paper>
     </Box>
   );

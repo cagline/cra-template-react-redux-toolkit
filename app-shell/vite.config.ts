@@ -18,7 +18,16 @@ export default defineConfig({
         moduleA: 'http://localhost:3001/assets/remoteEntry.js',
         moduleB: 'http://localhost:3002/assets/remoteEntry.js',
       },
-      shared: ['react', 'react-dom', 'react-router-dom', '@mui/material', '@emotion/react', '@emotion/styled'],
+      shared: {
+        react: { singleton: true, requiredVersion: '^19.2.0' },
+        'react-dom': { singleton: true, requiredVersion: '^19.2.0' },
+        'react-router-dom': { singleton: true, requiredVersion: '^7.1.1' },
+        '@mui/material': { singleton: true },
+        '@emotion/react': { singleton: true },
+        '@emotion/styled': { singleton: true },
+        i18next: { singleton: true, requiredVersion: '^25.5.2' },
+        'react-i18next': { singleton: true, requiredVersion: '^16.1.4' },
+      },
     }),
   ],
   build: {
