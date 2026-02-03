@@ -2,7 +2,7 @@ import React from 'react';
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { BrowserRouter } from "react-router-dom";
 import { selectThemeMode } from "./appSlice";
-import ErrorBoundary from "./components/ErrorBoundary/ErrorBoundary";
+import ErrorBoundary from "./shared/ErrorBoundary/ErrorBoundary";
 import AppRoutes from "./routes";
 import { useAppSelector } from "./store/hooks";
 

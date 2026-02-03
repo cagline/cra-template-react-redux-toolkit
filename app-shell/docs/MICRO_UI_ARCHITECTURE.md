@@ -200,7 +200,7 @@ Each remote builds and deploys its own JS bundle (e.g., a `remoteEntry.js`) to a
 
 | File | Purpose |
 |------|---------|
-| `src/components/SideNav/SideNav.tsx` | Add new menu items |
+| `src/shared/SideNav/SideNav.tsx` | Add new menu items |
 | `src/routes.tsx` | Add mount routes for micro UIs |
 | `public/env-config.js` | Runtime config for remote URLs |
 | `vite.config.ts` | Module Federation host config |

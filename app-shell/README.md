@@ -35,7 +35,7 @@ app-shell/
 ├── public/               # Static assets, env-config.js, locales (i18n)
 ├── src/
 │   ├── api/              # API slices (e.g. interceptors)
-│   ├── components/       # Shared UI (Topbar, SideNav, ErrorBoundary)
+│   ├── shared/            # Shared shell UI (Topbar, SideNav, ErrorBoundary)
 │   ├── config/           # App config (dev/prod)
 │   ├── features/        # Feature modules (counter, dashboard, todo, etc.)
 │   ├── layouts/         # DashboardLayout, UnauthorizedLayout

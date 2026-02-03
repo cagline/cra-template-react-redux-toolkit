@@ -24,7 +24,7 @@ This POC implements the micro frontend architecture described in `MICRO_UI_ARCHI
    - `ModuleAStub.tsx` - Team Management module (stub)
    - `ModuleBStub.tsx` - Reporting & Analytics module (stub)
 
-5. **Navigation** (`src/components/SideNav/SideNav.tsx`)
+5. **Navigation** (`src/shared/SideNav/SideNav.tsx`)
    - Added "Module A" and "Module B" menu items
 
 6. **Routing** (`src/routes.tsx`)
@@ -149,7 +149,7 @@ interface ShellProps {
 | `my-app/src/remotes/RemoteLoader.tsx` | Loads remote modules |
 | `my-app/src/remotes/types.ts` | Shell props type definitions |
 | `my-app/src/routes.tsx` | Route configuration |
-| `my-app/src/components/SideNav/SideNav.tsx` | Navigation with module links |
+| `my-app/src/shared/SideNav/SideNav.tsx` | Navigation with module links |
 | `remote-module-a/vite.config.ts` | Module Federation remote config |
 | `remote-module-a/src/App.tsx` | Remote module entry point |
 

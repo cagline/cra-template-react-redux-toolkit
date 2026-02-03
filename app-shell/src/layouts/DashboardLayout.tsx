@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import SideNav from "../components/SideNav/SideNav";
-import TopBar from "../components/Topbar/Topbar";
+import SideNav from "../shared/SideNav/SideNav";
+import TopBar from "../shared/Topbar/Topbar";
 import { Suspense, useState } from "react";
 import { Container, styled } from "@mui/material";
 
