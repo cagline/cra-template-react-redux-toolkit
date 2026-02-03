@@ -18,6 +18,8 @@
 | [MICRO_UI_ARCHITECTURE.md](./MICRO_UI_ARCHITECTURE.md) | Micro UI architecture decisions and design |
 | [MICRO_UI_POC_README.md](./MICRO_UI_POC_README.md) | POC implementation summary and what's built |
 
+**Doc flow (building a similar app):** [PROJECT-STRUCTURE](./PROJECT-STRUCTURE.md) → [FEATURE-STRUCTURE](./FEATURE-STRUCTURE.md) → [IMPLEMENTATION-GUIDE](./IMPLEMENTATION-GUIDE.md).
+
 ---
 
 ## Quick reference

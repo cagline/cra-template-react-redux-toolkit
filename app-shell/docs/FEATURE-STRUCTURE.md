@@ -44,13 +44,12 @@ TermsAndConditions/
 ├── TermsAndConditionsAddEditDrawer.tsx   # Create/edit UI
 ├── constants.ts                          # Feature constants & enums
 ├── useTermsAndConditionsController.ts    # Main controller/business logic
-├── useGetTermsAndConditions.ts           # API: fetch
-├── useSaveTermsAndConditions.ts          # API: create
-├── useUpdateTermsAndConditions.ts        # API: update
+├── termsAndConditionsApiSlice.ts         # RTK Query: one slice file for fetch/create/update (recommended)
 ├── utils.ts                              # Non-hook helpers (or 1–2 named files)
 └── TermsAndConditions.test.tsx           # Tests (next to code or one test file)
 ```
 
+- **API for server data:** Prefer one **`[featureName]ApiSlice.ts`** (RTK Query `createApi`) in the feature; it exports all query/mutation hooks. See “Feature API slices (RTK Query)” below. Alternatively you can use separate `useGet[Entity].ts` / `useSave[Entity].ts` files if not using RTK Query.
 - **No `[module]`** — Use `features/TermsAndConditions/` unless you have a strong product/module grouping (see “Module folder” below).
 - **No `components/`** — Page, Search, Grid, Drawer are siblings; names make their role clear.
 - **Tests** — One or a few test files at feature root (e.g. `TermsAndConditions.test.tsx` or `TermsAndConditionsPage.test.tsx`). No `__tests__/` unless the feature is complex.
@@ -140,7 +139,8 @@ Then use **`features/[FeatureName]/`** directly (e.g. `features/TermsAndConditio
 | Page/screen | `[FeatureName]Page.tsx` | `TermsAndConditionsPage.tsx` |
 | UI pieces | `[FeatureName][Role].tsx` | `TermsAndConditionsSearch.tsx`, `TermsAndConditionsGrid.tsx`, `TermsAndConditionsAddEditDrawer.tsx` |
 | Controller hook | `use[FeatureName]Controller.ts` | `useTermsAndConditionsController.ts` |
-| API hooks | `useGet[Entity].ts`, `useSave[Entity].ts`, `useUpdate[Entity].ts`, `useDelete[Entity].ts` | `useGetTermsAndConditions.ts` |
+| API (RTK Query) | `[featureName]ApiSlice.ts` | `termsAndConditionsApiSlice.ts` — one file, exports all query/mutation hooks. See [IMPLEMENTATION-GUIDE.md](./IMPLEMENTATION-GUIDE.md). |
+| API (separate hooks) | `useGet[Entity].ts`, `useSave[Entity].ts`, etc. | Optional if not using RTK Query |
 | Constants | `constants.ts` | `constants.ts` |
 | Utils | `utils.ts` or `[name].ts` | `utils.ts`, `validation.ts` |
 | Tests | `[FeatureName].test.tsx` or `[FileName].test.tsx` | `TermsAndConditions.test.tsx` |

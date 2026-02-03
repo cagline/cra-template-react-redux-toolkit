@@ -9,7 +9,7 @@ app-shell/
 ├── docs/                 # Documentation (getting started, env, remotes, i18n, feature structure)
 ├── public/               # Static assets, env-config.js, locales (i18n)
 ├── src/
-│   ├── api/              # API slices (e.g. interceptors)
+│   ├── api/              # Shared API only (base query, interceptors) — no feature slices here
 │   ├── shared/           # Shared shell UI (Topbar, SideNav, ErrorBoundary)
 │   ├── config/           # App config (dev/prod)
 │   ├── features/         # Feature modules (counter, dashboard, todo, etc.)
@@ -31,7 +31,7 @@ app-shell/
 |------|---------|
 | **docs/** | All development documentation (see [README](./README.md)) |
 | **public/** | Static assets, runtime env (`env-config.js`), i18n locale files |
-| **src/api/** | API layer (base query, interceptors, shared RTK Query setup) |
+| **src/api/** | Shared API only: base query, interceptors (e.g. `interceptorsSlice.ts`). No feature API slices here. |
 | **src/shared/** | Reusable shell UI: Topbar, SideNav, ErrorBoundary |
 | **src/config/** | App configuration (dev/prod, base URLs) |
 | **src/features/** | Feature modules (counter, dashboard, todo, home, help, error). See [FEATURE-STRUCTURE.md](./FEATURE-STRUCTURE.md) |
