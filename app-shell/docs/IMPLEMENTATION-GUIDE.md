@@ -2,7 +2,7 @@
 
 How to build a React application that matches this app-shell: **main structure**, **feature folder structure**, **API slices** (shared vs feature-owned), **store wiring**, and **routes**.
 
-Use this guide together with [PROJECT-STRUCTURE.md](./PROJECT-STRUCTURE.md) and [FEATURE-STRUCTURE.md](./FEATURE-STRUCTURE.md) so someone with only the `.md` files in `docs/` can generate a similar app.
+**Building from scratch or with an AI?** Start with [TECH-STACK-AND-SCAFFOLD.md](./TECH-STACK-AND-SCAFFOLD.md) for the required stack (React, Redux Toolkit, MUI, Vite, TypeScript) and scaffold order, then use this guide with [PROJECT-STRUCTURE.md](./PROJECT-STRUCTURE.md) and [FEATURE-STRUCTURE.md](./FEATURE-STRUCTURE.md) so someone with only the `.md` files in `docs/` can generate a similar app.
 
 ---
 
