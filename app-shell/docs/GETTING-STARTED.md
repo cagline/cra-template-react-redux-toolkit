@@ -1,6 +1,6 @@
 # Getting Started
 
-How to set up and run the app shell and remote modules locally.
+How to set up and run the app shell and remote modules locally. **Start here if you're new** — prerequisites, install, run, then where to read next and how to link work to requirements.
 
 ## Prerequisites
 
@@ -111,3 +111,20 @@ Update `public/env-config.js` (or your deployment config) to use the remote entr
 - **Remotes don't load / blank or error:** Ensure all three apps are running and CORS is enabled on remotes (already set in their `vite.config.ts`). Check browser console and Network tab for failed requests to `remoteEntry.js`.
 - **Wrong remote URL:** Edit `app-shell/public/env-config.js` (and/or `vite.config.ts` remotes for build-time). The shell loads remotes from `window._env_.MODULE_A_REMOTE_URL` etc. at runtime when using dynamic config.
 - **Language change doesn’t affect remotes:** Remotes share the shell’s i18n instance. Ensure all three use the same shared config (see [LOCALIZATION.md](./LOCALIZATION.md)).
+
+## What to read next
+
+| Goal | Document |
+|------|----------|
+| Understand project structure | [PROJECT-STRUCTURE](./PROJECT-STRUCTURE.md), [FEATURE-STRUCTURE](./FEATURE-STRUCTURE.md) |
+| Add or change a feature | [IMPLEMENTATION-GUIDE](./IMPLEMENTATION-GUIDE.md) |
+| Tech stack and scaffold (new project / AI) | [TECH-STACK-AND-SCAFFOLD](./TECH-STACK-AND-SCAFFOLD.md) |
+| Work from a User Story | [requirements/](./requirements/README.md) — find the US, link PR/commit to its id |
+| Environment and remotes | [ENVIRONMENT](./ENVIRONMENT.md) |
+
+## Conventions and requirements
+
+- **Stack and structure:** React 18+, Redux Toolkit (RTK Query), MUI, Vite, TypeScript. Feature layout: flat by default. See [TECH-STACK-AND-SCAFFOLD](./TECH-STACK-AND-SCAFFOLD.md), [FEATURE-STRUCTURE](./FEATURE-STRUCTURE.md), [IMPLEMENTATION-GUIDE](./IMPLEMENTATION-GUIDE.md).
+- **Linting and tests:** `npm run lint`, `npm run test` — fix lint before opening a PR.
+- **Linking work to requirements:** Reference the User Story id (e.g. `US-001`) in commit message or PR. Update the US file status to **In Progress** when starting, **Done** when the PR is merged. See [requirements/README](./requirements/README.md).
+- **PR checklist (suggested):** Code follows FEATURE-STRUCTURE and IMPLEMENTATION-GUIDE; lint and test pass; PR references the US id; US status updated when merging.
