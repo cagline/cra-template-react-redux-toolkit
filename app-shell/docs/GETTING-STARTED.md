@@ -126,5 +126,6 @@ Update `public/env-config.js` (or your deployment config) to use the remote entr
 
 - **Stack and structure:** React 18+, Redux Toolkit (RTK Query), MUI, Vite, TypeScript. Feature layout: flat by default. See [TECH-STACK-AND-SCAFFOLD](./TECH-STACK-AND-SCAFFOLD.md), [FEATURE-STRUCTURE](./FEATURE-STRUCTURE.md), [IMPLEMENTATION-GUIDE](./IMPLEMENTATION-GUIDE.md).
 - **Linting and tests:** `npm run lint`, `npm run test` — fix lint before opening a PR.
-- **Linking work to requirements:** Reference the User Story id (e.g. `US-001`) in commit message or PR. Update the US file status to **In Progress** when starting, **Done** when the PR is merged. See [requirements/README](./requirements/README.md).
-- **PR checklist (suggested):** Code follows FEATURE-STRUCTURE and IMPLEMENTATION-GUIDE; lint and test pass; PR references the US id; US status updated when merging.
+- **Commit messages:** Use `#TASK_ID - Brief description` (e.g. `#US-001 - Add login form` or `#JIRA-123 - Fix validation`). Keep the first line under ~72 characters; add a body line if you need more detail. When the work is for a User Story, use the US id as the task id (e.g. `#US-001 - Add login form`).
+- **Linking work to requirements:** Reference the User Story id (e.g. `US-001`) in commit message or PR. Update the US file status to **In Progress** when starting, **Done** when the PR is merged. Full steps (US → code and code → US): [requirements/README](./requirements/README.md) → "Workflow: keep requirement docs updated".
+- **PR checklist (suggested):** Code follows FEATURE-STRUCTURE and IMPLEMENTATION-GUIDE; lint and test pass; PR references the US id; US status updated when merging. When using GitHub, the PR template includes a requirement-docs checklist.

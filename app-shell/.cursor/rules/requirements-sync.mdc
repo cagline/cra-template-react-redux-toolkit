@@ -1,0 +1,22 @@
+---
+description: Keep requirement docs (User Stories, INDEX) updated when developing from a US or documenting a feature as a US
+globs: app-shell/src/features/**/*
+alwaysApply: false
+---
+# Requirements doc sync
+
+When you help with **User Stories** or **features**, update requirement docs so they stay in sync.
+
+## Developing from a User Story (US → code)
+
+- **Before starting:** In `docs/requirements/[epic]/US-###-[name].md`, set **Status** to **In Progress**.
+- **When done / PR merged:** Set the same US file **Status** to **Done**. Update `docs/requirements/INDEX.md` so that story’s row shows Status Done.
+- **Traceability:** In the US file, ensure **Technical Notes** → `Feature folder: src/features/[Name]` matches the implemented feature. Use commit format `#TASK_ID - Brief description` (e.g. `#US-001 - Add login form`). See GETTING-STARTED → Commit messages.
+
+## Documenting a feature as a User Story (code → US)
+
+- **Create US:** In `docs/requirements/[epic]/`, add `US-###-[short-name].md` from the [example template](docs/requirements/example-epic/US-001-example-story.md). Set **Technical Notes** → `Feature folder: src/features/[ExistingFeatureName]`. Set **Status** to **Done**.
+- **Register:** Add the story to the epic’s `README.md` and to `docs/requirements/INDEX.md`.
+- **Optional:** In the feature folder, add a one-line reference to the US file (e.g. in a README: `Requirement: docs/requirements/[epic]/US-###-xxx.md`).
+
+Full workflow: [docs/requirements/README.md](docs/requirements/README.md) → “Workflow: keep requirement docs updated”.

@@ -35,7 +35,45 @@ This folder holds **User Stories (US)** and **Change Requests (CR)** so requirem
 ### Traceability (code ↔ requirements)
 
 - **In the US:** Under "Technical Notes", set `Feature folder: src/features/[FeatureName]` and link to related docs.
-- **In code:** Reference the story in PR title/description and commit message (e.g. `US-001`, `docs/requirements/example-epic/US-001-example-story.md`). Optionally add a one-line comment or README in the feature folder: `Requirement: docs/requirements/[epic]/US-001-xxx.md`.
+- **In code:** Reference the story in PR title/description and commit message. Use the commit format `#TASK_ID - Brief description` (e.g. `#US-001 - Add login form`). See [GETTING-STARTED](../GETTING-STARTED.md) → "Commit messages". Optionally add a one-line comment or README in the feature folder: `Requirement: docs/requirements/[epic]/US-001-xxx.md`.
+
+---
+
+## Workflow: keep requirement docs updated
+
+Follow these steps so requirement docs stay in sync whether you **develop from a User Story** or **document an existing feature as a User Story**. AI agents should apply the same updates when helping with either flow.
+
+### When developing a feature from a User Story (US → code)
+
+1. **Before starting work**
+   - Open the US file: `docs/requirements/[epic]/US-###-[name].md`.
+   - Set **Status** to **In Progress**.
+   - Optionally use a branch name that includes the US id (e.g. `feature/US-001-login-form`).
+
+2. **While working**
+   - Use the commit format `#TASK_ID - Brief description` (e.g. `#US-001 - Add login form`). See [GETTING-STARTED](../GETTING-STARTED.md) → "Commit messages".
+   - In the US file, ensure **Technical Notes** → `Feature folder:` matches the feature you are implementing (e.g. `src/features/Login`).
+
+3. **When the PR is merged**
+   - Set the US file **Status** to **Done**.
+   - Update [INDEX.md](./INDEX.md): set the story’s Status to Done in the table.
+   - If the epic has a README that lists stories, ensure the story’s status is updated there too.
+
+### When documenting an existing feature as a User Story (code → US)
+
+1. **Create the User Story**
+   - Choose or create an epic folder under `requirements/[epic-name]/` (kebab-case).
+   - Copy [US template](./example-epic/US-001-example-story.md) to `US-###-[short-name].md`.
+   - Fill **Summary**, **Acceptance Criteria**, and **Technical Notes**.
+   - In **Technical Notes**, set `Feature folder: src/features/[ExistingFeatureName]` (the feature that already exists).
+
+2. **Register the story**
+   - Add the story to the epic’s `README.md` (list of stories in this epic).
+   - Add a row to [INDEX.md](./INDEX.md) (Epic | ID | Title | Status).
+   - Set **Status** to **Done** (since the feature already exists).
+
+3. **Optional: link from code to requirement**
+   - In the feature folder, add a one-line reference: in a README or at the top of the main file, e.g. `Requirement: docs/requirements/[epic]/US-###-xxx.md`.
 
 ---
 
