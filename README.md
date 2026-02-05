@@ -1,6 +1,24 @@
 # React + Redux Toolkit Boilerplate
 
+[![Vite](https://img.shields.io/badge/Vite-7.x-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Redux Toolkit](https://img.shields.io/badge/Redux%20Toolkit-2.x-764ABC?logo=redux&logoColor=white)](https://redux-toolkit.js.org/)
+[![MUI](https://img.shields.io/badge/MUI-7.x-007FFF?logo=mui&logoColor=white)](https://mui.com/)
+
 A production-style **React app template** (the **shell app**) with React 19, TypeScript, Vite, Redux Toolkit, MUI, and a documented structure. Optionally extend with **micro frontends** (Module Federation) when you need them.
+
+---
+
+## Project features
+
+- Fast development with [Vite](https://vitejs.dev/)
+- Type-safe codebase with [TypeScript](https://www.typescriptlang.org/)
+- State management with [Redux Toolkit](https://redux-toolkit.js.org/) — counter (slice) and todo (RTK Query) examples
+- UI with [MUI](https://mui.com/) (Material UI)
+- Multi-language support with `react-i18next`
+- **Docs-driven consistency** — `app-shell/docs/` as single source of truth so every developer gets the same kind of implementation across projects
+- Optional micro frontends via Module Federation (example remotes included)
 
 ---
 
