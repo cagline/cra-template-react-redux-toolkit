@@ -1,6 +1,16 @@
-# React + Redux Toolkit Micro Frontend Template
+# React + Redux Toolkit Boilerplate
 
-A monorepo template for building micro frontends with a **host app (shell)** and **remote modules**, using React 19, TypeScript, Vite, Redux Toolkit, MUI, and Module Federation.
+A production-style **React app template** (the **shell app**) with React 19, TypeScript, Vite, Redux Toolkit, MUI, and a documented structure. Optionally extend with **micro frontends** (Module Federation) when you need them.
+
+---
+
+## Purpose of this boilerplate
+
+**The whole idea** behind this boilerplate is **consistency across the multiple projects we maintain** — so every developer (and any AI agent) gets the **same kind of implementation**: same structure, same patterns, same conventions. One source of truth in `app-shell/docs/` (project structure, feature structure, implementation guide) means no drift: everyone follows the same rules and delivers the same style of output.
+
+The **main value** is the **shell app** (`app-shell/`): a single React application that gives you a modern stack, clear feature structure, Redux Toolkit patterns, and those docs. Use it as a standalone app or as the base for something bigger.
+
+**Micro frontends are optional** — a “sugar on top” if you later want to split the shell into a host plus remote modules. The repo includes example remotes so you can try that path without committing to it.
 
 ---
 
@@ -8,37 +18,37 @@ A monorepo template for building micro frontends with a **host app (shell)** and
 
 | Package | Description |
 |---------|--------------|
-| **app-shell** | Host application: layout, routing, theme, Redux store, i18n; loads remote modules at runtime. Includes examples of **Redux Toolkit state** (counter) and **RTK Query / API slice** (todo). **`docs/`** — getting started, environment, remote contract, feature structure, requirements — keeps the codebase and team consistent. |
-| **remote-module-a** | Example remote micro frontend (Module Federation). |
-| **remote-module-b** | Second example remote micro frontend. |
+| **app-shell** | **Main app** — layout, routing, theme, Redux store, i18n. Examples of **Redux Toolkit state** (counter) and **RTK Query / API slice** (todo). **`docs/`** — getting started, environment, feature structure, requirements — keeps the codebase and team consistent. Optionally loads remote modules at runtime (Module Federation). |
+| **remote-module-a** | *(Optional)* Example remote micro frontend. |
+| **remote-module-b** | *(Optional)* Second example remote micro frontend. |
 
-**Note:** In production or real use, these would typically be **three separate projects** — separate repos, separate builds, **hosted separately**. Each remote has its own URL; the shell loads them at runtime. This repo keeps all three in one place for **convenience** so you can **learn** the full setup and **clone once** to run the shell and remotes locally. When you adopt this pattern, you’d split them into separate repos and host them independently.
-
-The shell provides the layout (sidebar, topbar), shared MUI theme, React Router, and Redux Toolkit store. Remotes are loaded via `@originjs/vite-plugin-federation` and can run standalone or be stubbed when not running.
+**Note:** In real use, remotes would typically be **separate projects** — separate repos, hosted separately. They’re in this repo for **convenience** so you can learn or try the full setup with one clone. You can ignore them and use only the shell.
 
 ---
 
-## Why it matters for developers
+## Why the shell app matters for developers
 
 - **Modern stack** — React 19, Redux Toolkit, Vite, TypeScript, MUI in one place.
-- **Micro frontends** — Independent teams can own remotes; runtime integration with optional stub mode.
-- **Production-style structure** — Features, layouts, remotes, env config, i18n, and docs you can reuse or hand to an AI agent to scaffold from.
-- **Fully documented** — Getting started, environment, remote contract, localization, feature structure, and requirements live under `app-shell/docs/`.
+- **Redux patterns out of the box** — Counter (slice state) and todo (RTK Query / API slice) show how to structure state and server data.
+- **Production-style structure** — Features, layouts, env config, i18n, and docs you can reuse or hand to an AI agent to scaffold from.
+- **Fully documented** — Getting started, environment, feature structure, requirements, and localization live under `app-shell/docs/`.
 
-Use this repo as a reference or as a base for your own shell + remotes setup.
+**Optional: micro frontends** — If you need to split later, the shell supports Module Federation; remotes are included as examples. Use the shell alone, or add remotes when it’s useful.
+
+Use this repo as a reference or as a base for your own app (with or without remotes).
 
 ---
 
 ## How the documentation keeps consistency
 
-The **`app-shell/docs/`** folder is more than a reference: it’s the single source of truth that helps keep the codebase and team aligned.
+The **`app-shell/docs/`** folder is the **single source of truth** so that across multiple projects, every developer gets the **same kind of output** — same structure, same patterns, same implementation style.
 
+- **Same structure everywhere** *(most important)* — [PROJECT-STRUCTURE](app-shell/docs/PROJECT-STRUCTURE.md), [FEATURE-STRUCTURE](app-shell/docs/FEATURE-STRUCTURE.md), and [IMPLEMENTATION-GUIDE](app-shell/docs/IMPLEMENTATION-GUIDE.md) define how features are organized (flat vs subfolders, naming by role), where API slices and shared code live, and how to add new features. **Everyone—and any AI agent—follows the same rules**, so implementations stay consistent across projects and teams.
 - **Requirements in sync with code** — User Stories and Change Requests live in `docs/requirements/` with clear conventions, status workflow, and traceability (e.g. commit format `#US-001 - description`, feature folder links). Whether you develop from a story or document existing code, the same workflow keeps requirements and implementation consistent.
-- **Same structure everywhere** — [PROJECT-STRUCTURE](app-shell/docs/PROJECT-STRUCTURE.md), [FEATURE-STRUCTURE](app-shell/docs/FEATURE-STRUCTURE.md), and [IMPLEMENTATION-GUIDE](app-shell/docs/IMPLEMENTATION-GUIDE.md) define how features are organized (flat vs subfolders, naming by role), where API slices and shared code live, and how to add new features. Everyone—and any AI agent—follows the same rules.
-- **One contract for remotes** — [REMOTE-MODULE-CONTRACT](app-shell/docs/REMOTE-MODULE-CONTRACT.md) defines ShellProps and how remotes integrate, so the shell and every remote stay compatible.
+- **One contract for remotes** *(optional)* — [REMOTE-MODULE-CONTRACT](app-shell/docs/REMOTE-MODULE-CONTRACT.md) defines ShellProps and how remotes integrate when you use micro frontends.
 - **Shared conventions** — Environment ([ENVIRONMENT](app-shell/docs/ENVIRONMENT.md)), localization ([LOCALIZATION](app-shell/docs/LOCALIZATION.md)), and getting-started conventions (branch names, commit messages, stub mode) are documented in one place, so onboarding and day-to-day work stay consistent.
 
-Using `app-shell/docs/` as the hub for structure, requirements, and contracts reduces drift and makes it easier to scale the app or hand the repo to a new team or an AI agent and get predictable results.
+Using `app-shell/docs/` as the hub reduces drift: scale to more projects or hand the repo to a new team or an AI agent and get **the same kind of implementation** every time.
 
 ---
 
@@ -52,4 +62,4 @@ Using `app-shell/docs/` as the hub for structure, requirements, and contracts re
 ## Documentation
 
 - **[app-shell/README.md](app-shell/README.md)** — Shell overview, features, structure, scripts.
-- **[app-shell/docs/](app-shell/docs/)** — Full documentation hub: getting started, environment, remote contract, i18n, feature structure, requirements, and scaffold guide. Use it to keep structure and requirements consistent across the codebase and team.
+- **[app-shell/docs/](app-shell/docs/)** — Full documentation hub: getting started, environment, feature structure, requirements, i18n, scaffold guide; remote contract when using micro frontends. Use it to keep structure and requirements consistent across the codebase and team.
